@@ -68,7 +68,7 @@ OBJ =	 main.o f90DataTypes.o  random.o writegif.o nbin.o \
 	emissModule.o missing_flags.o read_melt_percentages.o\
 	 globModule.o inputParser.o readTables_nonsph.o bisection.o cloud.o\
 	absorb.o gcloud.o file_check.o writeCMBOut_TK.o writeCMBTOut_TK.o \
- 	read_TRMM.o read_GPM.o read_GPM_FS.o io_subs.o getbits.o header_getter_L2.o meta_assign.o\
+ 	read_TRMM.o read_GPM.o readScans.o read_GPM_FS.o io_subs.o getbits.o header_getter_L2.o meta_assign.o\
 	geomask.o f90Types.o allocateMem.o ezlhconv.o readNh.o beamConvP.o beamConvSet.o\
 	resampGMI.o interpol.o readENV.01.o geophysEns.o gEnv.qvcorr.o radarRet.Empty.o outputminmax.o radarRet.o \
         radarRet_P2.o sst.rend.o radarRet_P1.o flannModule.o\
@@ -410,6 +410,10 @@ io_subs.o:	src_c/io_subs.c
 read_GPM.o:	src_c/read_GPM.c
 		echo $(INC)
 		$(CC) -c  -D$(CPP_SWITCH) $(INC) src_c/read_GPM.c
+
+readScans.o:	src_c/readScans.c
+		echo $(INC)
+		$(CC) -c  -D$(CPP_SWITCH) $(INC) src_c/readScans.c
 
 read_GPM_FS.o:	src_c/read_GPM_FS.c
 		echo $(INC)
