@@ -78,7 +78,7 @@ OBJ =	 main.o f90DataTypes.o  random.o writegif.o nbin.o \
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	radarRet_P4.o radarRet_P4_FS.o filterUp1.o \
         kgainBLAS.o interp_melt_percentages.o rteModule.o getScattProp.o armadillo_funcs.o cmbAlg.o \
-					       writeCMBOut_TK_FS.o  writeCMB300Out_TK_FS.o
+					       writeCMBOut_TK_FS.o  writeCMB300Out_TK_FS.o writeCMB300Out_TK.o
 
 OBJEXE	=    $(OBJ)  mainf.o  
 
@@ -433,6 +433,9 @@ writeCMBOut_TK_FS.o:	src_c/writeCMBOut_TK_FS.c
 
 writeCMB300Out_TK_FS.o:	src_c/writeCMB300Out_TK_FS.c
 		$(CC) -c -g -D$(CPP_SWITCH) -O2 $(INC) src_c/writeCMB300Out_TK_FS.c
+
+writeCMB300Out_TK.o:	src_c/writeCMB300Out_TK.c
+		$(CC) -c -g -D$(CPP_SWITCH) -O2 $(INC) src_c/writeCMB300Out_TK.c
 
 screenocean.o:	src_c/screenocean.c
 		$(CC) -c -O2 src_c/screenocean.c
