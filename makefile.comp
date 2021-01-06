@@ -67,7 +67,7 @@ OBJ =	 main.o f90DataTypes.o  random.o writegif.o nbin.o \
 	weightModule.o lut_routines_sjm.o \
 	emissModule.o missing_flags.o read_melt_percentages.o\
 	 globModule.o inputParser.o readTables_nonsph.o bisection.o cloud.o\
-	absorb.o gcloud.o file_check.o writeCMBOut_TK.o writeCMBTOut_TK.o \
+	absorb.o gcloud.o file_check.o writeCMBOut_TK.o writeCMBTOut_TK.o  writeCMBT300Out_TK.o \
  	read_TRMM.o read_GPM.o readScans.o read_GPM_FS.o io_subs.o getbits.o header_getter_L2.o meta_assign.o\
 	geomask.o f90Types.o allocateMem.o ezlhconv.o readNh.o beamConvP.o beamConvSet.o\
 	resampGMI.o interpol.o readENV.01.o geophysEns.o gEnv.qvcorr.o radarRet.Empty.o outputminmax.o radarRet.o \
@@ -431,6 +431,9 @@ writeCMBOut_TK.o:	src_c/writeCMBOut_TK.c
 
 writeCMBTOut_TK.o:	src_c/writeCMBTOut_TK.c
 		$(CC) -c -g -D$(CPP_SWITCH) -O2 $(INC) src_c/writeCMBTOut_TK.c
+
+writeCMBT300Out_TK.o:	src_c/writeCMBT300Out_TK.c
+		$(CC) -c -g -D$(CPP_SWITCH) -O2 $(INC) src_c/writeCMBT300Out_TK.c
 
 writeCMBOut_TK_FS.o:	src_c/writeCMBOut_TK_FS.c
 		$(CC) -c -g -D$(CPP_SWITCH) -O2 $(INC) src_c/writeCMBOut_TK_FS.c

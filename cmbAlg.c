@@ -1,4 +1,4 @@
-int mainj (int i, char *pfname, int *ifs, char* jobname);
+int mainj (int i, char *pfname, int *ifs, char* jobname,int *ialgOut);
 #include "stdlib.h"
 #include <stdio.h>
 #include <string.h>
@@ -10,7 +10,7 @@ void radarretsub2_(int *nmu2,  int *nmfreq2,   int *icL, float *tbRgrid,
 void radarretsub3_(int *nmu2,  int *nmfreq2,   int *icL, float *tbRgrid,  
 		  float *dprrain, int *ichunk, int *orbNumb, int *ialg, int *idir);
 void radarretsub4_(int *nmu2,  int *nmfreq2,   int *icL, float *tbRgrid,  
-		  float *dprrain, int *ichunk, int *orbNumb, int *ialg, int *idir);
+		   float *dprrain, int *ichunk, int *orbNumb, int *ialg, int *idir, int *nscans_c);
 void radarretsub4_fs_(int *nmu2,  int *nmfreq2,   int *icL, float *tbRgrid,  
 		      float *dprrain, int *ichunk, int *orbNumb, int *ialg, int *idir,
 		      int *nscans_c);
@@ -18,7 +18,8 @@ void dealloc_struct_(int *i);
 void close_files_(int *i);
 void rewindc_(int *ic);
 void writescan_fs_300_(int *isc);
-
+void writescan_300_(int *isc);
+void writescant_300_(int *isc);
 int main(int argc, char *argv[])
 {
   char  fname[100];
@@ -34,9 +35,10 @@ int main(int argc, char *argv[])
   strcpy(&fname[0],argv[2]);
   printf("%s \n",&fname[0]);
   
-
-  int ndpr=mainj(1,fname,&ifs,&jobname[0]);
-  printf("Back from mainj() %i\n",ndpr);
+  int ialg=1;
+  int ndpr=mainj(1,fname,&ifs,&jobname[0],&ialg);
+  printf("Back from mainj() %i %i\n",ndpr,ialg);
+  //exit(0);
   int ny=49;
   int nx=300;
   int nz=88;
@@ -48,12 +50,12 @@ int main(int argc, char *argv[])
   float *dprrain, *tbRgrid;
   tbRgrid=(float*) malloc(sizeof(float)*9300*49*14);
   dprrain=(float*) malloc(sizeof(float)*49*300);
-  int ialg=1;
+ 
   int idir;
   int icL;
   int nchunk=ndpr/300;
   printf("nchunk = %d\n",nchunk);
-  for(i=0;i<=10;i++)
+  for(i=0;i<=1;i++)
     {
       if(ifs==1)
        {
@@ -83,9 +85,18 @@ int main(int argc, char *argv[])
            }
 	  else
            {
-            printf("Calling radarretsub4()\n");
-	    radarretsub4_(&nmu,  &nmfreq,   &icL, tbRgrid,  
-			     dprrain, &i, &orbNumb, &ialg, &idir);
+	     int nscans_c;
+	     printf("Calling radarretsub4()\n");
+	     radarretsub4_(&nmu,  &nmfreq,   &icL, tbRgrid,  
+			   dprrain, &i, &orbNumb, &ialg, &idir, &nscans_c);
+	     int j=0;
+	     if(ialg==1)
+	       for(j=0;j<nscans_c;j++)
+		 writescan_300_(&j);
+	     else
+	       for(j=0;j<nscans_c;j++)
+		 writescant_300_(&j);
+
 	   }
 	  dealloc_struct_(&i);
 	}
