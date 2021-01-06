@@ -67,7 +67,7 @@ L2AKuX_FS      L2AKuDataX;
 
 
 
-void setlatlons1_fsi_(int *isc,float *lat, float *lon, float *sfcPrecip, 
+void setlatlons1_fs_300_(int *isc,float *lat, float *lon, float *sfcPrecip, 
                   float *sfcPrecipStd, float *piaOut)
 {
   int i;
@@ -85,7 +85,7 @@ void setlatlons1_fsi_(int *isc,float *lat, float *lon, float *sfcPrecip,
     }
 }
 
-void setlatlons2_fsi_(int *isc,float *lat, float *lon, float *sfcPrecip, 
+void setlatlons2_fs_300_(int *isc,float *lat, float *lon, float *sfcPrecip, 
                   float *sfcPrecipStd, float *piaOutKu, float *piaOutKa)
 {
   int i;
@@ -104,7 +104,7 @@ void setlatlons2_fsi_(int *isc,float *lat, float *lon, float *sfcPrecip,
     }
 }
 
-void copyrrates1_fsi_(int *isc,float *rrate, float *rratestd, int *i)
+void copyrrates1_fs_300_(int *isc,float *rrate, float *rratestd, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -116,7 +116,7 @@ void copyrrates1_fsi_(int *isc,float *rrate, float *rratestd, int *i)
     }
 }
 
-void copysflfract_fsi_(int *isc,float *lfract, int *i)
+void copysflfract_fs_300_(int *isc,float *lfract, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -129,21 +129,21 @@ void copysflfract_fsi_(int *isc,float *lfract, int *i)
 
 
 //begin  WSO 8/30/13
-void copyenvsfqvs1_fsi_(int *isc,float *envQv, int *i)
+void copyenvsfqvs1_fs_300_(int *isc,float *envQv, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.surfaceVaporDensity[*i]=envQv[nbins-1];
 }
 
-void copyenvsfqvs2_fsi_(int *isc,float *envQv, int *i)
+void copyenvsfqvs2_fs_300_(int *isc,float *envQv, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].FS.surfaceVaporDensity[*i]=envQv[nbins-1];
 }
 
-void copyenvqvs1_fsi_(int *isc,float *envQv, short *envnodes, int *i)
+void copyenvqvs1_fs_300_(int *isc,float *envQv, short *envnodes, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -151,7 +151,7 @@ void copyenvqvs1_fsi_(int *isc,float *envQv, short *envnodes, int *i)
       swathx300[*isc].NS.vaporDensity[*i][k]=envQv[envnodes[k]-1];
 }
 
-void copyenvqvs2_fsi_(int *isc,float *envQv, short *envnodes, int *i)
+void copyenvqvs2_fs_300_(int *isc,float *envQv, short *envnodes, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -159,7 +159,7 @@ void copyenvqvs2_fsi_(int *isc,float *envQv, short *envnodes, int *i)
       swathx300[*isc].FS.vaporDensity[*i][k]=envQv[envnodes[k]-1];
 }
 
-void copyenvpresss1_fsi_(int *isc,float *envQv, short *envnodes, int *i)
+void copyenvpresss1_fs_300_(int *isc,float *envQv, short *envnodes, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -167,7 +167,7 @@ void copyenvpresss1_fsi_(int *isc,float *envQv, short *envnodes, int *i)
     swathx300[*isc].NS.airPressure[*i][k]=envQv[envnodes[k]-1];
 }
 
-void copyenvpresss2_fsi_(int *isc,float *envQv, short *envnodes, int *i)
+void copyenvpresss2_fs_300_(int *isc,float *envQv, short *envnodes, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -175,7 +175,7 @@ void copyenvpresss2_fsi_(int *isc,float *envQv, short *envnodes, int *i)
     swathx300[*isc].FS.airPressure[*i][k]=envQv[envnodes[k]-1];
 }
 
-void copyenvtemps1_fsi_(int *isc,float *envQv, short *envnodes, int *i)
+void copyenvtemps1_fs_300_(int *isc,float *envQv, short *envnodes, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -186,7 +186,7 @@ void copyenvtemps1_fsi_(int *isc,float *envQv, short *envnodes, int *i)
      }
 }
 
-void copyenvtemps2_fsi_(int *isc,float *envQv, short *envnodes, int *i)
+void copyenvtemps2_fs_300_(int *isc,float *envQv, short *envnodes, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -197,14 +197,14 @@ void copyenvtemps2_fsi_(int *isc,float *envQv, short *envnodes, int *i)
     }
 }
 
-void copyenvsftemps1_fsi_(int *isc,float *envQv, int *i)
+void copyenvsftemps1_fs_300_(int *isc,float *envQv, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.surfaceAirTemperature[*i]=envQv[nbins-1];
 }
 
-void copyenvsftemps2_fsi_(int *isc,float *envQv, int *i)
+void copyenvsftemps2_fs_300_(int *isc,float *envQv, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -213,7 +213,7 @@ void copyenvsftemps2_fsi_(int *isc,float *envQv, int *i)
 
 //end    WSO 8/30/13
 
-void copypwcs1_fsi_(int *isc,float *rrate, float *rratestd, int *i)
+void copypwcs1_fs_300_(int *isc,float *rrate, float *rratestd, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -226,7 +226,7 @@ void copypwcs1_fsi_(int *isc,float *rrate, float *rratestd, int *i)
 }
 
 //begin  WSO 8/7/13
-void copylwcfracs1_fsi_(int *isc,float *mlwc_frac, float *mrate_frac, int *i)
+void copylwcfracs1_fs_300_(int *isc,float *mlwc_frac, float *mrate_frac, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -238,7 +238,7 @@ void copylwcfracs1_fsi_(int *isc,float *mlwc_frac, float *mrate_frac, int *i)
     }
 }
 
-void copysfcrainliqfracs1_fsi_(int *isc,float *sfcrainliq_frac, int *i)
+void copysfcrainliqfracs1_fs_300_(int *isc,float *sfcrainliq_frac, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -247,7 +247,7 @@ void copysfcrainliqfracs1_fsi_(int *isc,float *sfcrainliq_frac, int *i)
 }
 //end    WSO 8/7/13
 
-void copyd0s1_fsi_(int *isc,float *dm, int *i)
+void copyd0s1_fs_300_(int *isc,float *dm, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -258,7 +258,7 @@ void copyd0s1_fsi_(int *isc,float *dm, int *i)
     }
 }
 
-void copyzckus1_fsi_(int *isc,float *zc, int *i)
+void copyzckus1_fs_300_(int *isc,float *zc, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -274,7 +274,7 @@ void copyzckus1_fsi_(int *isc,float *zc, int *i)
     }
 }
 
-void copynodess1_fsi_(int *isc,int *node, int *i)
+void copynodess1_fs_300_(int *isc,int *node, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -284,7 +284,7 @@ void copynodess1_fsi_(int *isc,int *node, int *i)
     }
 }
 
-void copyrrates2_fsi_(int *isc,float *rrate, float *rratestd, int *i)
+void copyrrates2_fs_300_(int *isc,float *rrate, float *rratestd, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -296,7 +296,7 @@ void copyrrates2_fsi_(int *isc,float *rrate, float *rratestd, int *i)
     }
 }
 
-void copypwcs2_fsi_(int *isc,float *rrate, float *rratestd, int *i)
+void copypwcs2_fs_300_(int *isc,float *rrate, float *rratestd, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -312,7 +312,7 @@ void copypwcs2_fsi_(int *isc,float *rrate, float *rratestd, int *i)
 }
 
 //begin  WSO 8/7/13
-void copylwcfracs2_fsi_(int *isc,float *mlwc_frac, float *mrate_frac, int *i)
+void copylwcfracs2_fs_300_(int *isc,float *mlwc_frac, float *mrate_frac, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -324,7 +324,7 @@ void copylwcfracs2_fsi_(int *isc,float *mlwc_frac, float *mrate_frac, int *i)
     }
 }
 
-void copysfcrainliqfracs2_fsi_(int *isc,float *sfcrainliq_frac, int *i)
+void copysfcrainliqfracs2_fs_300_(int *isc,float *sfcrainliq_frac, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -334,7 +334,7 @@ void copysfcrainliqfracs2_fsi_(int *isc,float *sfcrainliq_frac, int *i)
 //end   WSO 8/7/13
 
 
-void copyd0s2_fsi_(int *isc,float *dm, int *i)
+void copyd0s2_fs_300_(int *isc,float *dm, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -346,7 +346,7 @@ void copyd0s2_fsi_(int *isc,float *dm, int *i)
     }
 }
 
-void copyzckus2_fsi_(int *isc,float *zku, float *zka, int *i)
+void copyzckus2_fs_300_(int *isc,float *zku, float *zka, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -367,7 +367,7 @@ void copyzckus2_fsi_(int *isc,float *zku, float *zka, int *i)
 //end    WSO 9/17/13
     }
 }
-void copynodess2_fsi_(int *isc,int *node, int *i)
+void copynodess2_fs_300_(int *isc,int *node, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -378,7 +378,7 @@ void copynodess2_fsi_(int *isc,int *node, int *i)
 }
 
 //  SFM  begin  12/13/2013; add flag to call sequence
-void frominput_fsi_(int *isc,long *st_2adpr)
+void frominput_fs_300_(int *isc,long *st_2adpr)
 {
 //  SFM  begin  12/13/2013
   extern TKINFO       granuleHandle2AKu;
@@ -590,7 +590,7 @@ void frominput_fsi_(int *isc,long *st_2adpr)
 
 }
 
-void copyscantime_fsi_(int *isc,int *i)
+void copyscantime_fs_300_(int *isc,int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
   extern int DayOfMonth[300], DayOfYear[300], Hour[300], MilliSecond[300],
@@ -623,35 +623,35 @@ void copyscantime_fsi_(int *isc,int *i)
 //end WSO 04/07/2013
 }
 
-void copypreciptype_fsi_(int *isc,int *ptype, int *i)
+void copypreciptype_fs_300_(int *isc,int *ptype, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   //swath.S1.precipitationType[*i]=*ptype;
 }
 
-void copyw10_fsi_(int *isc,float *w10, int *i)
+void copyw10_fs_300_(int *isc,float *w10, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.tenMeterWindSpeed[*i]=*w10;
 }
 
-void copyw10sigma_fsi_(int *isc,float *w10s, int *i)
+void copyw10sigma_fs_300_(int *isc,float *w10s, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.tenMeterWindSigma[*i]=*w10s;
 }
 
-void copyw10small_fsi_(int *isc,float *w10, int *i)
+void copyw10small_fs_300_(int *isc,float *w10, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].FS.tenMeterWindSpeed[*i]=*w10;
 }
 
-void copyw10smallsigma_fsi_(int *isc,float *w10s, int *i)
+void copyw10smallsigma_fs_300_(int *isc,float *w10s, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -661,7 +661,7 @@ void copyw10smallsigma_fsi_(int *isc,float *w10s, int *i)
 
 
 //  begin  SFM  12/26/2013
-void write_empty_fsi_(int *isc)
+void write_empty_fs_300_(int *isc)
 
 //    brief utility to put empty keyword into output file header
 //    when needed
@@ -675,7 +675,7 @@ void write_empty_fsi_(int *isc)
 //  end    SFM  12/26/2013
 
 //  begin  SFM  11/27/2013
-void writescan_fsi_(int *isc)
+void writescan_fs_300_(int *isc)
 {
   int ret;
   char emptygranuletext[100];
@@ -687,42 +687,42 @@ void writescan_fsi_(int *isc)
 }
 //  end    SFM  11/27/2013
 
-void copysfcairtemps1_fsi_(int *isc,float *sfcVar, int *i)
+void copysfcairtemps1_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.surfaceAirTemperature[*i]=*sfcVar;
 }
 
-void copysfcairtemps2_fsi_(int *isc,float *sfcVar, int *i)
+void copysfcairtemps2_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].FS.surfaceAirTemperature[*i]=*sfcVar;
 }
 
-void copysfcairpresss1_fsi_(int *isc,float *sfcVar, int *i)
+void copysfcairpresss1_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.surfaceAirPressure[*i]=*sfcVar;
 }
 
-void copysfcairpresss2_fsi_(int *isc,float *sfcVar, int *i)
+void copysfcairpresss2_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].FS.surfaceAirPressure[*i]=*sfcVar;
 }
 
-void copyskintemps1_fsi_(int *isc,float *sfcVar, int *i)
+void copyskintemps1_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.skinTemperature[*i]=*sfcVar;
 }
 
-void copyskintemps2_fsi_(int *isc,float *sfcVar, int *i)
+void copyskintemps2_fs_300_(int *isc,float *sfcVar, int *i)
 {  
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -730,7 +730,7 @@ void copyskintemps2_fsi_(int *isc,float *sfcVar, int *i)
 }
 
 //write skin temperature estimate uncertainty
-void copyskintempsigmas1_fsi_(int *isc,float *skinsigma, int *i)
+void copyskintempsigmas1_fs_300_(int *isc,float *skinsigma, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -738,7 +738,7 @@ void copyskintempsigmas1_fsi_(int *isc,float *skinsigma, int *i)
   swathx300[*isc].NS.skinTempSigma[*i] = *skinsigma;
 }
 
-void copyskintempsigmas2_fsi_(int *isc,float *skinsigma, int *i)
+void copyskintempsigmas2_fs_300_(int *isc,float *skinsigma, int *i)
 {  
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -747,7 +747,7 @@ void copyskintempsigmas2_fsi_(int *isc,float *skinsigma, int *i)
 }
 
 //write column vapor estimate uncertainty
-void copycolumnvaporsigmas1_fsi_(int *isc,float *colvaporsigma, int *i)
+void copycolumnvaporsigmas1_fs_300_(int *isc,float *colvaporsigma, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -755,7 +755,7 @@ void copycolumnvaporsigmas1_fsi_(int *isc,float *colvaporsigma, int *i)
   swathx300[*isc].NS.columnVaporSigma[*i] = *colvaporsigma;
 }
 
-void copycolumnvaporsigmas2_fsi_(int *isc,float *colvaporsigma, int *i)
+void copycolumnvaporsigmas2_fs_300_(int *isc,float *colvaporsigma, int *i)
 {  
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -764,7 +764,7 @@ void copycolumnvaporsigmas2_fsi_(int *isc,float *colvaporsigma, int *i)
 }
 
 //write column cloud liquid estimate uncerainty
-void copycolumncloudliqsigmas1_fsi_(int *isc,float *colcldsigma, int *i)
+void copycolumncloudliqsigmas1_fs_300_(int *isc,float *colcldsigma, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -772,7 +772,7 @@ void copycolumncloudliqsigmas1_fsi_(int *isc,float *colcldsigma, int *i)
   swathx300[*isc].NS.columnCloudLiqSigma[*i] = *colcldsigma;
 }
 
-void copycolumncloudliqsigmas2_fsi_(int *isc,float *colcldsigma, int *i)
+void copycolumncloudliqsigmas2_fs_300_(int *isc,float *colcldsigma, int *i)
 {  
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -781,7 +781,7 @@ void copycolumncloudliqsigmas2_fsi_(int *isc,float *colcldsigma, int *i)
 }
 
 //write algorithm type flag
-void copyalgotypes1_fsi_(int *isc,int *algotype, int *i)
+void copyalgotypes1_fs_300_(int *isc,int *algotype, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -789,7 +789,7 @@ void copyalgotypes1_fsi_(int *isc,int *algotype, int *i)
   swathx300[*isc].NS.FLG.algoType[*i] = *algotype;
 }
 
-void copyalgotypes2_fsi_(int *isc,int *algotype, int *i)
+void copyalgotypes2_fs_300_(int *isc,int *algotype, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -799,7 +799,7 @@ void copyalgotypes2_fsi_(int *isc,int *algotype, int *i)
 
 
 //write error of non-raining data fit
-void copyerrorofdatafits1_fsi_(int *isc,float *erroroffit, int *i)
+void copyerrorofdatafits1_fs_300_(int *isc,float *erroroffit, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -807,7 +807,7 @@ void copyerrorofdatafits1_fsi_(int *isc,float *erroroffit, int *i)
   swathx300[*isc].NS.errorOfDataFit[*i] = *erroroffit;
 }
 
-void copyerrorofdatafits2_fsi_(int *isc,float *erroroffit, int *i)
+void copyerrorofdatafits2_fs_300_(int *isc,float *erroroffit, int *i)
 {  
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -815,7 +815,7 @@ void copyerrorofdatafits2_fsi_(int *isc,float *erroroffit, int *i)
   swathx300[*isc].FS.errorOfDataFit[*i] = *erroroffit;
 }
 
-void copysfcemissouts1_fsi_(int *isc,float *tbout, int *i)
+void copysfcemissouts1_fs_300_(int *isc,float *tbout, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -835,7 +835,7 @@ void copysfcemissouts1_fsi_(int *isc,float *tbout, int *i)
 //end    WSO 10/13/15
 }
 
-void copysfcemissouts1sigma_fsi_(int *isc,float *tbout, int *i)
+void copysfcemissouts1sigma_fs_300_(int *isc,float *tbout, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -855,7 +855,7 @@ void copysfcemissouts1sigma_fsi_(int *isc,float *tbout, int *i)
 //end    WSO 10/13/15
 }
 
-void copysfcemissouts2_fsi_(int *isc,float *tbout, int *i)
+void copysfcemissouts2_fs_300_(int *isc,float *tbout, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -875,7 +875,7 @@ void copysfcemissouts2_fsi_(int *isc,float *tbout, int *i)
 //end    WSO 10/13/15
 }
 
-void copysfcemissouts2sigma_fsi_(int *isc,float *tbout, int *i)
+void copysfcemissouts2sigma_fs_300_(int *isc,float *tbout, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -895,7 +895,7 @@ void copysfcemissouts2sigma_fsi_(int *isc,float *tbout, int *i)
 //end    WSO 10/13/15
 }
 
-void copytbouts1_fsi_(int *isc,float *tbout, int *i)
+void copytbouts1_fs_300_(int *isc,float *tbout, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -912,7 +912,7 @@ void copytbouts1_fsi_(int *isc,float *tbout, int *i)
 //end    WSO 9/16/13
 }
 
-void copytbouts2_fsi_(int *isc,float *tbout, int *i)
+void copytbouts2_fs_300_(int *isc,float *tbout, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -931,14 +931,14 @@ void copytbouts2_fsi_(int *isc,float *tbout, int *i)
 //end  WSO 9/16/13
 }
 
-void copyrainflags1_fsi_(int *isc,int *sfcVar, int *i)
+void copyrainflags1_fs_300_(int *isc,int *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.Input.precipitationFlag[*i]=*sfcVar;
 }
 
-void copyrainflags2_fsi_(int *isc,int *sfcVar, int *i)
+void copyrainflags2_fs_300_(int *isc,int *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -947,14 +947,14 @@ void copyrainflags2_fsi_(int *isc,int *sfcVar, int *i)
 }
 
 //begin  WSO 8/20/14 write new ioquality flags
-void copyioqualitys1_fsi_(int *isc,int *sfcVar, int *i)
+void copyioqualitys1_fs_300_(int *isc,int *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.FLG.ioQuality[*i]=*sfcVar;
 }
 
-void copyioqualitys2_fsi_(int *isc,int *sfcVar, int *i)
+void copyioqualitys2_fs_300_(int *isc,int *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -963,14 +963,14 @@ void copyioqualitys2_fsi_(int *isc,int *sfcVar, int *i)
 //end    WSO 8/20/14
 //
 //begin  WSO 3/17/17 write snow ice cover flags
-void copysnowices1_fsi_(int *isc,int *sfcVar, int *i)
+void copysnowices1_fs_300_(int *isc,int *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.Input.snowIceCover[*i]=*sfcVar;
 }
 
-void copysnowices2_fsi_(int *isc,int *sfcVar, int *i)
+void copysnowices2_fs_300_(int *isc,int *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -978,21 +978,21 @@ void copysnowices2_fsi_(int *isc,int *sfcVar, int *i)
 }
 //end    WSO 3/17/17
 
-void copysfcliqfracts1_fsi_(int *isc,float *sfcVar, int *i)
+void copysfcliqfracts1_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.surfLiqRateFrac[*i]=*sfcVar;
 }
 
-void copysfcliqfracts2_fsi_(int *isc,float *sfcVar, int *i)
+void copysfcliqfracts2_fs_300_(int *isc,float *sfcVar, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].FS.surfLiqRateFrac[*i]=*sfcVar;
 }
 
-void copycldwaters1_fsi_(int *isc,float *var1d, int *i)
+void copycldwaters1_fs_300_(int *isc,float *var1d, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1003,7 +1003,7 @@ void copycldwaters1_fsi_(int *isc,float *var1d, int *i)
     }
 }
 
-void copycldwaters2_fsi_(int *isc,float *var1d, int *i)
+void copycldwaters2_fs_300_(int *isc,float *var1d, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300]; 
@@ -1014,7 +1014,7 @@ void copycldwaters2_fsi_(int *isc,float *var1d, int *i)
     }
 }
 
-void copycldices1_fsi_(int *isc,float *var1d, int *i)
+void copycldices1_fs_300_(int *isc,float *var1d, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1025,7 +1025,7 @@ void copycldices1_fsi_(int *isc,float *var1d, int *i)
     }
 }
 
-void copycldices2_fsi_(int *isc,float *var1d, int *i)
+void copycldices2_fs_300_(int *isc,float *var1d, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1037,7 +1037,7 @@ void copycldices2_fsi_(int *isc,float *var1d, int *i)
 }
 
 //begin  WSO 9/5/13 new copy routine for SRT and DSRT pia effective sigma's
-void copysigmapias1_fsi_(int *isc,float *sigmapia, int *i)
+void copysigmapias1_fs_300_(int *isc,float *sigmapia, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 //diagnostic
@@ -1045,7 +1045,7 @@ void copysigmapias1_fsi_(int *isc,float *sigmapia, int *i)
 //end diagnostic
   swathx300[*isc].NS.Input.piaEffectiveSigma[*i] = *sigmapia;
 }
-void copysigmapias2_fsi_(int *isc,float *sigmapiaku, float *sigmapiaka, int *i)
+void copysigmapias2_fs_300_(int *isc,float *sigmapiaku, float *sigmapiaka, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 //    diagnostic
@@ -1058,7 +1058,7 @@ void copysigmapias2_fsi_(int *isc,float *sigmapiaku, float *sigmapiaka, int *i)
 //end    WSO 9/5/13
 
 //write principal components
-void copyprincomps1_fsi_(int *isc,float *princomp, int *i)
+void copyprincomps1_fs_300_(int *isc,float *princomp, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1069,7 +1069,7 @@ void copyprincomps1_fsi_(int *isc,float *princomp, int *i)
     }
 }
 //
-void copyprincomps2_fsi_(int *isc,float *princomp, int *i)
+void copyprincomps2_fs_300_(int *isc,float *princomp, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1081,14 +1081,14 @@ void copyprincomps2_fsi_(int *isc,float *princomp, int *i)
 }
 
 //write profile class
-void copyprofclasss1_fsi_(int *isc,int *profclass, int *i)
+void copyprofclasss1_fs_300_(int *isc,int *profclass, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 
   swathx300[*isc].NS.aPriori.profClass[*i] = *profclass;
 }
 
-void copyprofclasss2_fsi_(int *isc,int *profclass, int *i)
+void copyprofclasss2_fs_300_(int *isc,int *profclass, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 
@@ -1096,14 +1096,14 @@ void copyprofclasss2_fsi_(int *isc,int *profclass, int *i)
 }
 
 //write surface precip bias ratio
-void copysurfprecipbiasratios1_fsi_(int *isc,float *biasratio, int *i)
+void copysurfprecipbiasratios1_fs_300_(int *isc,float *biasratio, int *i)
 { 
   extern L2BCMBX_SWATHS swathx300[300];
 
   swathx300[*isc].NS.aPriori.surfPrecipBiasRatio[*i] = *biasratio;
 }
 
-void copysurfprecipbiasratios2_fsi_(int *isc,float *biasratio, int *i)
+void copysurfprecipbiasratios2_fs_300_(int *isc,float *biasratio, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 
@@ -1112,7 +1112,7 @@ void copysurfprecipbiasratios2_fsi_(int *isc,float *biasratio, int *i)
 
 
 //write initial log10 of the PSD intercept
-void copyinitnws1_fsi_(int *isc,float *initlogNw, int *n9, int *i)
+void copyinitnws1_fs_300_(int *isc,float *initlogNw, int *n9, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1130,7 +1130,7 @@ void copyinitnws1_fsi_(int *isc,float *initlogNw, int *n9, int *i)
     }
 }
 
-void copyinitnws2_fsi_(int *isc,float *initlogNw, int *n9, int *i)
+void copyinitnws2_fs_300_(int *isc,float *initlogNw, int *n9, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1149,14 +1149,14 @@ void copyinitnws2_fsi_(int *isc,float *initlogNw, int *n9, int *i)
 }
 
 //write sub-footprint variability parameter
-void copysubfootvariabilitys1_fsi_(int *isc,float *subfoot, int *i)
+void copysubfootvariabilitys1_fs_300_(int *isc,float *subfoot, int *i)
 { 
   extern L2BCMBX_SWATHS swathx300[300];
 
   swathx300[*isc].NS.nubfPIAfactor[*i] = *subfoot;
 } 
   
-void copysubfootvariabilitys2_fsi_(int *isc,float *subfoot, int *i)
+void copysubfootvariabilitys2_fs_300_(int *isc,float *subfoot, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
     
@@ -1164,14 +1164,14 @@ void copysubfootvariabilitys2_fsi_(int *isc,float *subfoot, int *i)
 }
 
 //write multiple scattering flag
-void copymultiscatcalcs1_fsi_(int *isc,int *multiscat, int *i)
+void copymultiscatcalcs1_fs_300_(int *isc,int *multiscat, int *i)
 { 
   extern L2BCMBX_SWATHS swathx300[300];
   
   swathx300[*isc].NS.FLG.multiScatCalc[*i] = *multiscat;
 }
 
-void copymultiscatcalcs2_fsi_(int *isc,int *multiscat, int *i)
+void copymultiscatcalcs2_fs_300_(int *isc,int *multiscat, int *i)
 { 
   extern L2BCMBX_SWATHS swathx300[300];
   
@@ -1179,14 +1179,14 @@ void copymultiscatcalcs2_fsi_(int *isc,int *multiscat, int *i)
 }
 
 //write multiple scattering surface parameter
-void copymultiscatsurfaces1_fsi_(int *isc,float *multisfc, int *i)
+void copymultiscatsurfaces1_fs_300_(int *isc,float *multisfc, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 
   swathx300[*isc].NS.multiScatMaxContrib[*i] = *multisfc;
 }
 
-void copymultiscatsurfaces2_fsi_(int *isc,float *multisfc, int *i)
+void copymultiscatsurfaces2_fs_300_(int *isc,float *multisfc, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
 
@@ -1195,12 +1195,12 @@ void copymultiscatsurfaces2_fsi_(int *isc,float *multisfc, int *i)
 
 //
 //begin  WSO 2/8/17 copy routine for measured sigma-zeros
-void copysigmazeros1_fsi_(int *isc,float *sigmazeroku, int *i)
+void copysigmazeros1_fs_300_(int *isc,float *sigmazeroku, int *i)
 {
   extern L2BCMBX_SWATHS swathx300[300];
   swathx300[*isc].NS.Input.sigmaZeroMeasured[*i] = *sigmazeroku;
 }
-void copysigmazeros2_fsi_(int *isc,float *sigmazeroku, float *sigmazeroka, int *i)
+void copysigmazeros2_fs_300_(int *isc,float *sigmazeroku, float *sigmazeroka, int *i)
 {
     extern L2BCMBX_SWATHS swathx300[300];
 //        swathx300[*isc].FS.Input.sigmaZeroMeasured[*i][0] = *sigmazeroku;
@@ -1210,7 +1210,7 @@ void copysigmazeros2_fsi_(int *isc,float *sigmazeroku, float *sigmazeroka, int *
 //end    WSO 2/8/17
 
 //begin  WSO 8/19/13 modified copy routines to include nodes
-void copylognws1_fsi_(int *isc,float *logNw, int *n9, int *i)
+void copylognws1_fs_300_(int *isc,float *logNw, int *n9, int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1231,7 +1231,7 @@ void copylognws1_fsi_(int *isc,float *logNw, int *n9, int *i)
     }
 }
 
-void copylognws2_fsi_(int *isc,float *logNw, int *n9,int *i)
+void copylognws2_fs_300_(int *isc,float *logNw, int *n9,int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1253,7 +1253,7 @@ void copylognws2_fsi_(int *isc,float *logNw, int *n9,int *i)
 //end    WSO 8/19/13
 
 //begin  WSO 8/19/13 add mu as second low-resolution parameter
-void copymus1_fsi_(int *isc,float *mu_prof, int *n9,int *i)
+void copymus1_fs_300_(int *isc,float *mu_prof, int *n9,int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
@@ -1271,7 +1271,7 @@ void copymus1_fsi_(int *isc,float *mu_prof, int *n9,int *i)
     }
 }
 
-void copymus2_fsi_(int *isc,float *mu_prof, int *n9,int *i)
+void copymus2_fs_300_(int *isc,float *mu_prof, int *n9,int *i)
 {
   int k;
   extern L2BCMBX_SWATHS swathx300[300];
