@@ -1,0 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void pymain_(void);
+
+int main(void)
+{
+  pymain_();
+}
