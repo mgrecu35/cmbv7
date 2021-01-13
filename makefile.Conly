@@ -63,7 +63,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	 weightModule.o	 globModule.o \
 	  lut_routines_sjm.o\
 	 emissModule.o missing_flags.o read_melt_percentages.o\
-	 cloud.o\
+	 cloud.o hbprof_new.o convRet.o \
 	absorb.o gcloud.o  \
 	geomask.o f90Types.o allocateMem.o ezlhconv.o readNh.o beamConvP.o beamConvSet.o\
 	resampGMI.o interpol.o geophysEns.o gEnv.o outputminmax.o \
@@ -72,7 +72,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o
+        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o
 
 OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o
 
@@ -373,6 +373,13 @@ radtran_tau_dble.o:	src_f90/radtran_tau_dble.f
 fhb1_noNaN.o:		src_f90/fhb1_noNaN.f90	
 		$(F90) $(F77OPTS)  $(OPENMP) src_f90/fhb1_noNaN.f90
 
+convRet.o:		src_f90/convRet.f90	
+		$(F90) $(F77OPTS)  $(OPENMP) src_f90/convRet.f90
+
+hbprof_new.o:		src_f90/hbprof_new.f90	
+		$(F90) $(F77OPTS)  $(OPENMP) src_f90/hbprof_new.f90
+							    
+
 bisection.o:	src_f90/bisection.f90	
 		$(F90) $(F77OPTS)  src_f90/bisection.f90
 
@@ -446,6 +453,10 @@ writeCMBOut_TK_FS.o:	src_c/writeCMBOut_TK_FS.c
 
 screenocean.o:	src_c/screenocean.c
 		$(CC) -c -O2 src_c/screenocean.c
+
+stratiform.o:	src_c/stratiform.c
+		$(CC) -c -O2 src_c/stratiform.c
+
 
 dsphere2.o:	dsphere2.f
 		$(F77) -c -O2 dsphere2.f

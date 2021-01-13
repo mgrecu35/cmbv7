@@ -1,5 +1,6 @@
 subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
-     dn1d,dm1d,rrate1d,zKuC,zKaSim,epst,piaKu,piaKa,itype,dncv,dnp,dzdn,piaSRTKu,relPIASRTKu,&
+     dn1d,dm1d,rrate1d,zKuC,zKaSim,epst,piaKu,piaKa,itype,dncv,dnp,&
+     dzdn,piaSRTKu,relPIASRTKu,&
      rrate1d_sub, dn_sub, dm_sub, zkuc_sub, piahb_sub, piaKa_sub,zetaS)
   use tables2
   use tableP2
@@ -26,7 +27,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   !(/-4.57599678e-04,  8.52247958e-02, -1.78316499e+00/)
   real :: rn, dm_old!, dm_sub(n1d,31)
   real :: zka1,zka2,attka2
-  real,intent(out) :: dt1, dt2
+  real :: dt1, dt2
   real :: start, finish1, finish2
   integer :: kk, imc, isub
   real :: dmm
@@ -43,6 +44,8 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   dZKa=0
   rrate1d=0
   call cpu_time(start)
+  !print*, n1d, bcf,bzd
+  if(bzd<0) bzd=bsfc
   do it=1,2
      piaKu=0.0
      piaKa=0.0
@@ -63,6 +66,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
            attKuS=att13TableS2(n1,imu)*10**dns(k+1)
            attKaS=att35TableS2(n1,imu)*10**dns(k+1)
            !n1H,n2H=bisection(zKuHJ,ztrueH)
+           !print*, ztrueS,n1,attKuS
            call bisection2(zKuSJ,nbinS2,ztrueH, n1H)
            attKuH=att13TableH(n1H,imu)
            attKaH=att35TableH(n1H,imu)
@@ -89,7 +93,8 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
         end do
      end if
   end do
-  
+  !print*, piaKu,piaKa,btop,bcf, zkuL(btop+1:bcf+1)
+  !return
   piaKuS=piaKu+0.0
   piaKaS=piaKa+0.0
 
@@ -226,3 +231,42 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
      print*, 'zetaS=',zetaS(1:31:3)
   end if
 end subroutine iter_profcv2
+
+
+subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
+     piaSRTKu,dpiaSRT,relFlagKu,relFlag,zetaS)
+  implicit none
+  integer :: bzd,bcf
+  real :: rrate(176), dmOut(176), dm_sub(176,31), rrate_sub(176,31), piaka_sub(31),&
+       piahb_sub(31), zetaS(31)
+  real :: probS,prob1,q,beta
+  real :: dpiaSRT, piaSRTKu
+  integer  :: relFlag,relFlagKu 
+  integer :: i, k
+  probS=0
+  q=0.2*log(10.0)
+  beta=0.71
+  !print*, bzd,bcf
+  !print*, zetaS
+  do i=1,31
+
+     if(q*beta*zetaS(i)<0.99) then
+        if (relFlag==1 .and. dpiaSRT<20) then
+           prob1=exp(-0.5*(piaka_sub(i)-piahb_sub(i)-dpiaSRT)**2/2.0)
+        else
+           prob1=1.0
+        endif
+        if(relFlagKu==1 .and. piaSRTKu>5.0) then
+           prob1=prob1*exp(-0.5*(piahb_sub(i)-piaSRTKu)**2/4.0)
+        end if
+        prob1=prob1+1e-9
+        do k=bzd+1,bcf+1
+           rrate(k)=rrate(k)+prob1*rrate_sub(k,i)
+           dmOut(k)=dmOut(k)+prob1*dm_sub(k,i)
+        end do
+        probS=probS+prob1
+     endif
+  end do
+  rrate=rrate/probS
+  dmOut=dmOut/probS
+end subroutine convRetf90

@@ -34,14 +34,30 @@ int read_dpr(int iscan)
   return status;
 }
 
+void convretf90_(float *rrate,float *dmOut,float *dm_sub,float *rrate_sub,
+		 int *bzd,int *bcf,float *piaka_sub,float *piahb_sub,
+		 float *piaSRTKu,float *dpiaSRT,int *relFlagKu,int *relFlag,float *zetaS);
+  
+void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
+		float piaSRTKu, int reliabFlagKu, float piadSRT, int reliabFlag,
+		int *nodes5, float *pRate,
+		float *dn, float *dm, float *piaKu, float *piaKa);
+
+void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float *zKu, float *zKa,
+		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
+		int *nodes5, float *pRate,
+		float *dn, float *dm, float *piaKu, float *piaKa);
 void process_scan(void)
 {
   int j,k;
   float zKu[176], zKa[176];
   extern L2BCMB_SWATHS swath;
-  int btop,bzd,bcf,bsfc;
+  int btop,bzd,bcf,bsfc,binBBT, binBB;
   float srtPIAKu, dsrtPIA;
   int reliabFlagKu, reliabFlagDF;
+  int nodes5[5];
+  float pRate[176],dn[176], dm[176];
+  float piaKu, piaKa;
   for(j=0;j<49;j++)
     {
       swath.NS.Latitude[j]=dprswath.NS.Latitude[j];
@@ -51,7 +67,13 @@ void process_scan(void)
       swath.NS.Input.localZenithAngle[j]=dprswath.NS.PRE.localZenithAngle[j];
       swath.NS.Input.surfaceType[j]=dprswath.NS.PRE.landSurfaceType[j];
       swath.NS.Input.surfaceRangeBin[j]=(dprswath.NS.PRE.binRealSurface[j]-1)/2;
-      swath.NS.Input.stormTopBin[j]=(dprswath.NS.PRE.binStormTop[j]-1)/2; 
+      swath.NS.Input.stormTopBin[j]=(dprswath.NS.PRE.binStormTop[j]-1)/2;
+      btop=dprswath.NS.PRE.binStormTop[j];
+      binBB=dprswath.NS.CSF.binBBPeak[j];
+      binBBT=dprswath.NS.CSF.binBBTop[j];
+      bcf=dprswath.NS.PRE.binClutterFreeBottom[j];
+      bzd=dprswath.NS.VER.binZeroDeg[j];
+      bsfc=dprswath.NS.PRE.binRealSurface[j];
       if(swath.NS.Input.stormTopBin[j]<0)
 	swath.NS.Input.stormTopBin[j]=-99;
       swath.NS.Input.stormTopAltitude[j]=dprswath.NS.PRE.heightStormTop[j];
@@ -59,6 +81,8 @@ void process_scan(void)
 	(dprswath.MS.PRE.binClutterFreeBottom[j] - 2)/2;
       srtPIAKu=dprswath.NS.SRT.PIAhybrid[j];
       reliabFlagKu=dprswath.NS.SRT.reliabFactorHY[j];
+      if(dprswath.NS.PRE.flagPrecip[j]==0)
+	swath.NS.surfPrecipTotRate[j]=0;
       if(dprswath.NS.PRE.flagPrecip[j]!=0)
 	{
 	  for(k=0;k<176;k++)
@@ -69,6 +93,75 @@ void process_scan(void)
 	      else
 		zKa[k]=-99;
 	    }
+	   if((int)(dprswath.NS.CSF.typePrecip[j]/1e7)==2)
+	     {
+	       if(reliabFlagKu==2)
+		 reliabFlagKu=1;
+	       float piadSRT=5*srtPIAKu;
+	       int reliabFlag=reliabFlagKu;
+	       reliabFlagKu=-1;
+	       convective(btop,bzd,bcf,bsfc,zKu,zKa,
+			  srtPIAKu,reliabFlagKu, piadSRT, reliabFlag, nodes5, pRate,
+			  dn, dm, &piaKu, &piaKa);
+	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
+	       
+	     }
+	   else
+	     swath.NS.surfPrecipTotRate[j]=0;
+	   if((int)(dprswath.NS.CSF.typePrecip[j]/1e7)==1)
+	     {
+	       if(reliabFlagKu==2)
+		 reliabFlagKu=1;
+	       float piadSRT=5*srtPIAKu;
+	       int reliabFlag=reliabFlagKu;
+	       reliabFlagKu=-1;
+	       stratiform(btop,bzd,bcf,bsfc,binBB,binBBT,zKu,zKa,
+			  srtPIAKu, reliabFlagKu, piadSRT, reliabFlag,
+			  nodes5, pRate, dn, dm, &piaKu, &piaKa);
+	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
+	       //if(!(binBB>0))
+	       // printf("%g %g %g %g\n",piaKu,piaKa,pRate[bcf],zKu[bcf]);
+	       //printf("%g %g %g\n",piaKu,piaKa,pRate[bcf]);
+	     }
+	  
+	     
 	}
     }
+}
+
+void iter_profcv2_(int *btop,int *bzd,int *bcf,int *bsfc,float *zKuL,
+		   float *zKaL,float *dr,int *n1d,float *eps,int *imu,
+		   float *dn1d,float *dm1d,float *rrate1d,float *zKuC,
+		   float *zKaSim,float *epst,float *piaKu,float *piaKa,
+		   int *itype,float *dncv,float *dnp,float *dzdn, 
+		   float *piaSRTKu,int *relPIASRTKu,
+		   float *rrate1d_sub, float *dn_sub,
+		   float *dm_sub, float *zkuc_sub, float *piahb_sub,
+		   float *piaKa_sub,float *zetaS);
+  
+void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
+		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
+		int *nodes5, float *pRate,
+		float *dn, float *dm, float *piaKu, float *piaKa)
+{
+  float dr=0.125, dncv=0.0, eps=1.0, epst;
+  int imu=3, itype=2, n1d=176;
+  float zKuC[176], zKaSim[176], rrate1d_sub[176*31],dn_sub[176*31],
+    dm_sub[176*31], zkuc_sub[176*31], piahb_sub[31], piaKa_sub[31],
+    zetaS[31], dzdn[176*176], dnp[176];
+  int i;
+  for(i=0;i<176;i++)
+    dnp[i]=0;
+  //printf("%i ",bzd);
+  iter_profcv2_(&btop,&bzd,&bcf,&bsfc,zKu,
+		zKa,&dr,&n1d,&eps,&imu,dn,dm,pRate,zKuC,
+		zKaSim,&epst,piaKu,piaKa,
+		&itype,&dncv,dnp,dzdn, 
+		&srtPIAKu,&reliabFlagKu,rrate1d_sub,dn_sub,
+		dm_sub,zkuc_sub,piahb_sub,piaKa_sub,zetaS);
+  //printf("%i \n",bzd);
+  if(bzd>100 && bzd<176)
+    convretf90_(pRate,dm,dm_sub,rrate1d_sub,&bzd,&bcf,piaKa_sub,piahb_sub,
+		&srtPIAKu,&piadSRT,&reliabFlagKu,&reliabFlag,zetaS);
+  
 }
