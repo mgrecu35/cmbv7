@@ -7,28 +7,26 @@ import numpy as np
 
 print('reading training data!')
 print('still reading...')
-mlSet=pickle.load(open('mlSet_04.plkz','rb'))
+mlSet=pickle.load(open('mlSetCv_05.plkz','rb'))
 print('reading done')
 xL=[]
 yL=[]
-nz=20
+nz=25
 
 for rec1 in mlSet:
-    zKu,zKa, rrEns,dmOut,attOut,dsrtPIA,nc=rec1
+    zKu,zKa,rrateOut,dmOut,dsrtPIA,nc=rec1
     zKu[zKu<0]=0
     zKu[zKu.mask==True]=0
     zKa[zKa<0]=0
     zKa[zKa.mask==True]=0
     x=[zKu[0:nz]/45,zKa[0:nz]/40.]
-    logAtt=np.log10(attOut[:nz,:]+1e-9)
-    logAtt[logAtt<-4]=-4
-    logAtt[:,0]=(4+logAtt[:,0])/3.0
-    logAtt[:,1]=(3+logAtt[:,1])/3.0
-    y1=np.zeros((nz,3),float)
+    logAtt=np.sqrt(rrateOut[:nz]+1e-9)
+    y1=np.zeros((nz,2),float)
     y1[:,0]=dmOut[0:nz]/3.0
-    y1[:,1:3]=logAtt
-    yL.append(y1.copy())
-    xL.append(np.array(x).T)
+    y1[:,1]=(logAtt)/11.0
+    if logAtt.max()==logAtt.max():
+        yL.append(y1.copy())
+        xL.append(np.array(x).T)
     
 
 xL=np.array(xL)
@@ -47,7 +45,7 @@ def lstm_model(ndims=2):
     inp = tf.keras.layers.Input(shape=(ntimes,ndims,))
     out1 = tf.keras.layers.LSTM(4, return_sequences=True)(inp)
     out1 = tf.keras.layers.LSTM(4, return_sequences=True)(out1)
-    out = tf.keras.layers.LSTM(3, return_sequences=True)(out1)
+    out = tf.keras.layers.LSTM(2, return_sequences=True)(out1)
     model = tf.keras.Model(inputs=inp, outputs=out)
     return model
 
@@ -58,11 +56,11 @@ model.compile(
     loss='mse',\
     metrics=[tf.keras.metrics.MeanSquaredError()])
 
-history = model.fit(x_train, y_train, batch_size=128,epochs=150,\
+history = model.fit(x_train, y_train, batch_size=128,epochs=100,\
                     validation_data=(x_val, y_val))
 
 
-model.save('modeldm_3layers_04_KuKa.h5')
+model.save('modeldm_3layers_04_Cv_KuKa.h5')
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -78,4 +76,11 @@ plt.ylabel("Predicted Dm (mm)")
 plt.title("Dual Frequency Dm Retrievals")
 c=plt.colorbar()
 c.ax.set_title("Counts")
-plt.savefig("DF_Dm.png")
+plt.savefig("DF_CV_Dm.png")
+
+yp=model.predict(x_val)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_aspect('equal')
+a1=np.nonzero(y_val[:,:,1]>0)
+plt.hist2d(y_val[:,:,1][a1],yp[:,:,1][a1],bins=np.arange(25)*0.04,norm=matplotlib.colors.LogNorm(),cmap='jet')

@@ -29,8 +29,8 @@ CFLAGS  = -O2 $(OPENMPF)
 C++FLAGS= -O2 $(OPENMPG)
 
 #---Compiler Directives
-CPP_SWITCH = IFORT
-CC_SWITCH  = IFORT
+CPP_SWITCH = GFOR
+CC_SWITCH  = GFOR
 
 #---Specialty Library Locations
 HDF4_INC=/Users/mgrecu/miniconda3/include
@@ -72,9 +72,9 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-        kgainBLAS.o getScattProp.o armadillo_funcs.o
+        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o
 
-OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o
+OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o
 
 #---Link and create Executable
 combAlg.exe:	$(OBJEXE) 
@@ -92,7 +92,10 @@ test_1CGMI_h5.o:	src_c/test_1CGMI_h5.c
 	        $(CC) $(INC) -c -O2 src_c/test_1CGMI_h5.c
 
 main.C.o: src_c/main.C.c
-						 $(CC) -c -O2 src_c/main.C.c
+						 $(CC) $(INC) -c -O2 src_c/main.C.c
+
+readDPR.o: src_c/readDPR.c
+						 $(CC) $(INC) -c -O2 src_c/readDPR.c
 
 readTables_nonsph.o:src_f90/readTables_nonsph.f90
 		$(F90) $(F77OPTS) src_f90/readTables_nonsph.f90

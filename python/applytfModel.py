@@ -9,12 +9,12 @@ from numpy import *
 cmb.mainfortpy()
 cmb.initp2()
 
-model=tf.keras.models.load_model('model_3layers_03.h5')
+model=tf.keras.models.load_model('model_3layers_05.h5')
 #stop
-mlSet=pickle.load(open('mlSet_03.plkz','rb'))
+mlSet=pickle.load(open('mlSet_04.plkz','rb'))
 xL=[]
 yL=[]
-nz=15
+nz=20
 res=array([0.07591046, 1.07204676, 3.22332151, 3.11376803])
 dmL=[]
 for rec1 in mlSet[:]:
@@ -54,15 +54,45 @@ y_train=yL[a[0],:,:]
 x_val=xL[b[0],:,:]
 y_val=yL[b[0],:,:]
 
-yp=model.predict(x_val[0:100000,:,:])
-fout=open('mlData.txt','w')
-
-for i in range(100000):
-    for j in range(15):
-        s='%6.3f %6.3f %6.3f %6.3f %6.3f %6.3f'%(x_val[i,j,0],x_val[i,j,1],\
-                                                 y_val[i,j,0],y_val[i,j,1],yp[i,j,0],yp[i,j,1])
-        #print(s)
-        fout.write(s+'\n')
+yp=model.predict(x_val[:,:,:])
+#print(time.time()-c)
+dmL=[]
+for i,i0 in zip(b[0][:],range(b[0].shape[0])):
+    rec1=mlSet[i]
+    y1=y_val[i0,:,:]
+    zKu,zKa, rrEns,dmOut,attOut,dsrtPIA,nc=rec1
+    zKu[zKu<0]=0
+    zKu[zKu.mask==True]=0
+    zKa[zKa<0]=0
+    zKa[zKa.mask==True]=0
+    x=[zKu[0:nz]/45,zKa[0:nz]/40]
+    logAtt=np.log10(attOut[:nz,:]+1e-9)
+    logAtt[logAtt<-4]=-4
+    logAtt[:,0]=(4+logAtt[:,0])/3.0
+    logAtt[:,1]=(3+logAtt[:,1])/3.0
+    x1=[zKu[0:]/45,zKa[0:]/40]
+    logAtt1=np.log10(attOut[:,:]+1e-9)
+    logAtt1[logAtt1<-4]=-4
+    logAtt1[:,0]=(4+logAtt1[:,0])/3.0
+    logAtt1[:,1]=(3+logAtt1[:,1])/3.0
+    #print(logAtt[-1,1],y1[-1,1])
+    attKu=10**(3*yp[0,:,0]-4)
+    zKu_true=zKu[:nz]+attKu.cumsum()*2
+    logattKa=3*yp[i0,:,1]-3
+    dmRet=np.polyval(res,logattKa-log10(0.125)-0.1*zKu_true)
+    ind=cmb.bisection2(cmb.tablep2.dmj[0:289],dmRet[-1])
+    nw=(zKu_true[-1]-cmb.tablep2.zkusj[ind])/10.
+    rret=cmb.tablep2.rj[ind]*10**nw
+    if dmOut[nz-1]>0:
+        dmL.append([dmOut[nz-1],dmRet[-1],nw,rret,rrEns[nz-1]])
+    
+#fout=open('mlData.txt','w')
+#for i in range(100000):
+#    for j in range(15):
+#        s='%6.3f %6.3f %6.3f %6.3f %6.3f %6.3f'%(x_val[i,j,0],x_val[i,j,1],\
+#                                                 y_val[i,j,0],y_val[i,j,1],yp[i,j,0],yp[i,j,1])
+#        #print(s)
+#        fout.write(s+'\n')
         
 
-fout.close()
+#fout.close()
