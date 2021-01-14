@@ -58,12 +58,12 @@ TKINFO ctkfileIn;
 
 L2BCMB_SWATHS swath;
 L2BCMB_SWATHS swath300[300];
-L2BCMBX_SWATHS swathx300[300];
+//L2BCMBX_SWATHS swathx300[300];
 L2ADPR_SWATHS dprswath;
-L2ADPRX_SWATHS dprxswath;
+//L2ADPRX_SWATHS dprxswath;
 L2BCMB_SWATHS swath1;
 L2AKu_NS      L2AKuData;
-L2AKuX_FS      L2AKuDataX;
+//L2AKuX_FS      L2AKuDataX;
 
 void openoutputfile_(char *jobname, char *fname)
 {

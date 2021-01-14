@@ -46,6 +46,8 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   call cpu_time(start)
   !print*, n1d, bcf,bzd
   if(bzd<0) bzd=bsfc
+  rrate1d=0
+  rrate1d_sub=0
   do it=1,2
      piaKu=0.0
      piaKa=0.0
@@ -248,9 +250,10 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   beta=0.71
   !print*, bzd,bcf
   !print*, zetaS
+  rrate=0.0
   do i=1,31
-
-     if(q*beta*zetaS(i)<0.99) then
+     if(q*beta*zetaS(i)<0.99.and.rrate_sub(bcf,i).lt.250.0.and.&
+          rrate_sub(bcf+1,i).lt.250.0) then
         if (relFlag==1 .and. dpiaSRT<20) then
            prob1=exp(-0.5*(piaka_sub(i)-piahb_sub(i)-dpiaSRT)**2/2.0)
         else

@@ -36,9 +36,12 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
 {
   float dnCoeff[2]={-0.01257341, -0.00933038};
   int bbb,imu=3,n1d=176,itype=1;
-  float piaKuS,piaKaS,dr=0.125,eps=1.0,epst=1.0,dnst=0.0;
+  float piaKuS,piaKaS,dr=0.125,eps=1.0,epst=1.0,dnst=-0.1;
   float dpn[176], dzdn[176*176], dpiadn[2*176], dnp[176], zKuC[176], zKaSim[176];
   float dt1,dt2;
+  int i;
+  for(i=0;i<176;i++)
+    dnp[i]=0;
   if(binBB>0)
     {
       bbb=binBB+2;
@@ -83,8 +86,16 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
 		   pRate_out,dn_out,zkusim,zkasim,zku_out,zka_out,
 		   rrEns,yEns,xEns,dy,pia_out,dmOut);
       int k;
+      if(pRate_out[n1-1]<0)
+	{
+	  for(k=0;k<n1;k++)
+	    printf("%g ",pRate_out[k]);
+	  printf("\n");
+	  exit(0);
+	}
       for(k=0;k<n1;k++)
 	pRate[bbb+k]=pRate_out[k];
+      
       /* rainprofstg_(int *n1,float *zku_obs,float *zka_obs,float *dpiaSRT,
 	 float *piakus,float *piakas, int *reldpia,
 	 int *nc,float *dr,float *wzku,float *wzka,float *wpia,

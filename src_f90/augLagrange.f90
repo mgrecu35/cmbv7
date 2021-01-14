@@ -148,6 +148,10 @@ subroutine rainprofstg(n1,zku_obs,zka_obs,dpiaSRT,piakus,piakas,&
         logrrate(i)=-999
      end if
   end do
+  !print*, n1, zku_obs
+  !print*, zka_obs
+  !print*, rrate_in
+  yEns=0
   do it=1,nens
      piaKut=piaKuS
      piaKat=piaKaS
@@ -182,6 +186,7 @@ subroutine rainprofstg(n1,zku_obs,zka_obs,dpiaSRT,piakus,piakas,&
      yEns(it,2*n1+1)=piaKat-piaKut
      xEns(it,2*n1+1)=piaKat-piaKut
   enddo
+  dy=0.0
   do i=1,n1
      if (zku_obs(i).gt.10) then
         dy(i)=zku_obs(i)-sum(zkusim(:,i))/nens
@@ -194,6 +199,8 @@ subroutine rainprofstg(n1,zku_obs,zka_obs,dpiaSRT,piakus,piakas,&
      dy(2*n1+1)=dpiaSRT-sum(yEns(:,2*n1+1))/nens
   end if
   sigma=4
+  !print*, yEns(1,:)
+  !print*, n1
   call kgain(xENS, yEns, dy, 2*n1+1, 2*n1+1, nEns, sigma, dx)
   !print*, dx
   !stop
@@ -216,9 +223,13 @@ subroutine rainprofstg(n1,zku_obs,zka_obs,dpiaSRT,piakus,piakas,&
         zku_out(i)=zkusj(n1j)+10*dnp-piaKut
         zka_out(i)=zkasj(n1j)+10*dnp-piaKat
         dm_out(i)=dmJ(n1j)
+        rrate_out(i)=10**logRJ(n1j)*10**dnp
         piaKut=piaKut+attKuJ(n1j)*10**dnp*dr
         piaKat=piaKat+attKaJ(n1j)*10**dnp*dr
+     else
+        rrate_out(i)=0.0
      end if
+     
   end do
   piaKut=piaKut+attKuL*2*nc*dr
   piaKat=piaKat+attKaL*2*nc*dr

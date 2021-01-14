@@ -104,7 +104,11 @@ void process_scan(void)
 			  srtPIAKu,reliabFlagKu, piadSRT, reliabFlag, nodes5, pRate,
 			  dn, dm, &piaKu, &piaKa);
 	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
-	       
+	       if(pRate[bcf]>300 || pRate[bcf]<0)
+		 {
+		   printf("%i %g %g %g %i\n",j,pRate[bcf],srtPIAKu,zKu[bcf],bcf);
+		   exit(0);
+		 }
 	     }
 	   else
 	     swath.NS.surfPrecipTotRate[j]=0;
@@ -118,6 +122,13 @@ void process_scan(void)
 	       stratiform(btop,bzd,bcf,bsfc,binBB,binBBT,zKu,zKa,
 			  srtPIAKu, reliabFlagKu, piadSRT, reliabFlag,
 			  nodes5, pRate, dn, dm, &piaKu, &piaKa);
+	       if(pRate[bcf]<0)
+		 {
+		   for(k=bzd;k<=bcf;k++)
+		     printf("%g %g",pRate[k],zKu[k]);
+		   printf("\n");
+		   exit(0);
+		 }
 	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
 	       //if(!(binBB>0))
 	       // printf("%g %g %g %g\n",piaKu,piaKa,pRate[bcf],zKu[bcf]);
@@ -160,8 +171,14 @@ void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
 		&srtPIAKu,&reliabFlagKu,rrate1d_sub,dn_sub,
 		dm_sub,zkuc_sub,piahb_sub,piaKa_sub,zetaS);
   //printf("%i \n",bzd);
+ 
   if(bzd>100 && bzd<176)
     convretf90_(pRate,dm,dm_sub,rrate1d_sub,&bzd,&bcf,piaKa_sub,piahb_sub,
 		&srtPIAKu,&piadSRT,&reliabFlagKu,&reliabFlag,zetaS);
-  
+  if(pRate[bcf]>100)
+    {
+      for(i=0;i<31;i++)
+	printf("%g ",rrate1d_sub[bcf+i*176]);
+      printf("\n");
+    }
 }
