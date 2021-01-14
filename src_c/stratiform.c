@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float *zKu, float *zKa,
 		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
 		int *nodes5, float *pRate,
@@ -16,6 +18,17 @@ void iter_profst_nobb_(int *btop,int *bzd,int *bcf,int *bsfc,float *zKuL,float *
 		      float *dnp,float *dzdn,float *dt1, float *dt2, float *dpiadn,
 		      float *piaKuS, float *piaKaS);
 
+
+void rainprofstg_(int *n1,float *zku_obs,float *zka_obs,float *dpiaSRT,
+		  float *piakus,float *piakas, int *reldpia,
+		  int *nc,float *dr,float *wzku,float *wzka,float *wpia,
+		  float *rrate_in,float *dn_in,int *nens,
+		  float *rrate_out,float *dn_out,float *zkusim,
+		  float *zkasim,float *zku_out,float *zka_out,
+		  float *rrens,float *yEns,float *xEns,float *dy,
+		  float *pia_out,float *dm_out);
+  
+
 void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float *zKu, float *zKa,
 		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
 		int *nodes5, float *pRate,
@@ -31,13 +44,67 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
       bbb=binBB+2;
       iter_profst_(&btop,&bzd,&binBB,&binBBT,&bbb,&bcf,&bsfc,
 		  zKu,zKa,&dr,&n1d,&eps,&imu,dn,dm,pRate,zKuC,zKaSim,
-		  &epst,&piaKu,&piaKa,&dnst,dnCoeff,
+		  &epst,piaKu,piaKa,&dnst,dnCoeff,
 		  dnp,dzdn,dpiadn,&piaKuS,&piaKaS);
     }
   else
-     iter_profst_nobb_(&btop,&bzd,&bcf,&bsfc,
+    {
+      iter_profst_nobb_(&btop,&bzd,&bcf,&bsfc,
 		       zKu,zKa,&dr,&n1d,&eps,&imu,dn,dm,pRate,zKuC,zKaSim,
-		       &epst,&piaKu,&piaKa,&itype,&dnst,dnCoeff,
+		       &epst,piaKu,piaKa,&itype,&dnst,dnCoeff,
 		       dnp,dzdn,&dt1,&dt2,dpiadn,&piaKuS,&piaKaS);
-    
+      bbb=bzd+2;
+    }
+  int n1=bcf-bbb+1;
+  float wzku=0.2,wzka=0.1,wpia=1;
+  int nens=60, nc;
+  float *pRate_out,*dn_out,*zkusimE,*zkasimE,
+    *zku_out,*zka_out,*rrEns,*yEns,*xEns,*dy,*pia_out,*dmOut,*attOut,*zkusim,*zkasim;
+  nc=bsfc-bcf;
+  if(n1>1)
+    {
+      //printf("%i %i %i %g %g \n",n1, bbb,bcf,piaKaS,piaKuS);
+      pRate_out=(float*)malloc(sizeof(float)*n1);
+      dn_out=(float*)malloc(sizeof(float)*n1);
+      zku_out=(float*)malloc(sizeof(float)*n1);
+      zka_out=(float*)malloc(sizeof(float)*n1);
+      dmOut=(float*)malloc(sizeof(float)*n1);
+      attOut=(float*)malloc(sizeof(float)*n1*2);
+      pia_out=(float*)malloc(sizeof(float)*2);
+      rrEns=(float*)malloc(sizeof(float)*n1*nens);
+      yEns=(float*)malloc(sizeof(float)*nens*(2*n1+1));
+      xEns=(float*)malloc(sizeof(float)*nens*(2*n1+1));
+      dy=(float*)malloc(sizeof(float)*(2*n1+1));
+      zkusim=(float*)malloc(sizeof(float)*(nens*n1));
+      zkasim=(float*)malloc(sizeof(float)*(nens*n1));
+      //rrens(nens,n1),pia_out(2),yEns(nens,2*n1+1),xEns(nens,2*n1+1), dy(2*n1+1)
+      rainprofstg_(&n1,&zKu[bbb],&zKa[bbb],&piadSRT,&piaKuS,&piaKaS,&reliabFlag,
+		   &nc,&dr,&wzku,&wzka,&wpia,&pRate[bbb],&dn[bbb],&nens,
+		   pRate_out,dn_out,zkusim,zkasim,zku_out,zka_out,
+		   rrEns,yEns,xEns,dy,pia_out,dmOut);
+      int k;
+      for(k=0;k<n1;k++)
+	pRate[bbb+k]=pRate_out[k];
+      /* rainprofstg_(int *n1,float *zku_obs,float *zka_obs,float *dpiaSRT,
+	 float *piakus,float *piakas, int *reldpia,
+	 int *nc,float *dr,float *wzku,float *wzka,float *wpia,
+	 float *rrate_in,float *dn_in,int *nens,
+	 float *rrate_out,float *dn_out,float *zkusim,
+	 float *zkasim,float *zku_out,float *zka_out,
+	 float *rrens,float *yEns,float *xEns,float *dy,
+	 float *pia_out,float *dm_out);*/
+      free(pRate_out);
+      free(dn_out);
+      free(zku_out);
+      free(zka_out);
+      free(dmOut);
+      free(attOut);
+      free(pia_out);
+      free(rrEns);
+      free(yEns);
+      free(xEns);
+      free(dy);
+      free(zkusim);
+      free(zkasim);
+    }
 }

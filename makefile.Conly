@@ -72,7 +72,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o
+        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o augLagrange.o
 
 OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o
 
@@ -417,6 +417,9 @@ retTables2.o:	RadarOnly/retTables2.f90 \
 
 rterain.o:	gEnv.o src_f90/rterain.f90
 		$(F90) $(FOPTS) $(OPENMP) src_f90/rterain.f90
+
+augLagrange.o:	gEnv.o src_f90/augLagrange.f90
+		$(F90) $(FOPTS) $(OPENMP) src_f90/augLagrange.f90
 
 rosen.o:	src_f90/rosen.f
 		$(F90) $(FOPTS) $(OPENMP) src_f90/rosen.f
