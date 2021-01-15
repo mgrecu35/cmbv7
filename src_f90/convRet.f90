@@ -1,7 +1,8 @@
 subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
      dn1d,dm1d,rrate1d,zKuC,zKaSim,epst,piaKu,piaKa,itype,dncv,dnp,&
      dzdn,piaSRTKu,relPIASRTKu,&
-     rrate1d_sub, dn_sub, dm_sub, zkuc_sub, piahb_sub, piaKa_sub,zetaS)
+     rrate1d_sub, dn_sub, dm_sub, zkuc_sub, piahb_sub, piaKa_sub,zetaS,&
+     piaKuS,piaKaS)
   use tables2
   use tableP2
   use ran_mod
@@ -139,20 +140,30 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
            attKu=att13Table(n1,imu)*10**dn
            attKa=att35Table(n1,imu)*10**dn
            zetaS(isub)=zetaS(isub)+attKu*dr
+           if(isub.eq.1.and.(zetaS(isub)*q*beta).gt.0.99) then
+              print*, zKuL(k+1)+piaKuS,ddn,dncv,zetaS(isub), piamax
+           end if
            zeta1d(k+1,isub)=zetaS(isub)
         else
            attKu=0.0
            attKa=0.0
         endif
      end do
-     if (q*beta*zetaS(isub).lt.0.985) then
+     if(q*beta*zetaS(1).gt.0.995) then
+        zetaS(isub)=(1-10**(-piamax*0.1*beta))/(q*beta)
+     end if
+     if (q*beta*zetaS(isub).lt.0.995) then
         piaKa_sub(isub)=piaKas
         piaHB_sub(isub)=-10/beta*log10(1-q*beta*zetaS(isub))+attKu*(bsfc-bcf)*2*dr
         do k=bzd,bcf
            if(zKuL(k+1).gt.10) then
               zKuC_sub(k+1,isub)=zKuL(k+1)-10/beta*log10(1-q*beta*zeta1d(k+1,isub))
               n1=int((zKuC_sub(k+1,isub)-zmin-10*dn_sub(k+1,isub))/dzbin)
+              if(n1.lt.1) n1=1
+              if(n1.gt.289) n1=289
+              !dn=
               dn=dn_sub(k+1,isub)
+
               attKa=att35Table(n1,imu)*10**dn
               piaKa_sub(isub)=piaKa_sub(isub)+attKa*dr
               if(n1.lt.1) n1=1
@@ -174,6 +185,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
               end if
            else
               attKa=0
+              rrate1d_sub(k+1,isub)=0.0
            end if
         end do
         piaKa_sub(isub)=piaKa_sub(isub)+attKa*(bsfc-bcf)*2*dr
@@ -252,7 +264,7 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   !print*, zetaS
   rrate=0.0
   do i=1,31
-     if(q*beta*zetaS(i)<0.99.and.rrate_sub(bcf,i).lt.250.0.and.&
+     if(q*beta*zetaS(i)<0.995.and.rrate_sub(bcf,i).lt.250.0.and.&
           rrate_sub(bcf+1,i).lt.250.0) then
         if (relFlag==1 .and. dpiaSRT<20) then
            prob1=exp(-0.5*(piaka_sub(i)-piahb_sub(i)-dpiaSRT)**2/2.0)

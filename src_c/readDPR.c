@@ -101,10 +101,18 @@ void process_scan(void)
 	       int reliabFlag=reliabFlagKu;
 	       reliabFlagKu=-1;
 	       convective(btop,bzd,bcf,bsfc,zKu,zKa,
-			  srtPIAKu,reliabFlagKu, piadSRT, reliabFlag, nodes5, pRate,
+			  srtPIAKu,reliabFlagKu, piadSRT, reliabFlag,
+			  nodes5, pRate,
 			  dn, dm, &piaKu, &piaKa);
 	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
 	       if(pRate[bcf]>300 || pRate[bcf]<0)
+		 {
+		   printf("%i %g %g %g %i\n",j,pRate[bcf],srtPIAKu,zKu[bcf],
+			  bcf);
+		   exit(0);
+		 }
+
+	       if(isnan(pRate[bcf]))
 		 {
 		   printf("%i %g %g %g %i\n",j,pRate[bcf],srtPIAKu,zKu[bcf],bcf);
 		   exit(0);
@@ -148,7 +156,7 @@ void iter_profcv2_(int *btop,int *bzd,int *bcf,int *bsfc,float *zKuL,
 		   float *piaSRTKu,int *relPIASRTKu,
 		   float *rrate1d_sub, float *dn_sub,
 		   float *dm_sub, float *zkuc_sub, float *piahb_sub,
-		   float *piaKa_sub,float *zetaS);
+		   float *piaKa_sub,float *zetaS,float *piaKuS,float *piaKaS);
   
 void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
 		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
@@ -161,6 +169,7 @@ void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
     dm_sub[176*31], zkuc_sub[176*31], piahb_sub[31], piaKa_sub[31],
     zetaS[31], dzdn[176*176], dnp[176];
   int i;
+  float piaKuS,piaKaS;
   for(i=0;i<176;i++)
     dnp[i]=0;
   //printf("%i ",bzd);
@@ -169,16 +178,20 @@ void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
 		zKaSim,&epst,piaKu,piaKa,
 		&itype,&dncv,dnp,dzdn, 
 		&srtPIAKu,&reliabFlagKu,rrate1d_sub,dn_sub,
-		dm_sub,zkuc_sub,piahb_sub,piaKa_sub,zetaS);
+		dm_sub,zkuc_sub,piahb_sub,piaKa_sub,zetaS,&piaKuS,&piaKaS);
   //printf("%i \n",bzd);
  
   if(bzd>100 && bzd<176)
     convretf90_(pRate,dm,dm_sub,rrate1d_sub,&bzd,&bcf,piaKa_sub,piahb_sub,
 		&srtPIAKu,&piadSRT,&reliabFlagKu,&reliabFlag,zetaS);
-  if(pRate[bcf]>100)
+  if(isnan(pRate[bcf]))
     {
+
       for(i=0;i<31;i++)
 	printf("%g ",rrate1d_sub[bcf+i*176]);
+      printf("\n %g %g\n",piaKuS,piaKaS);
+      for(i=0;i<31;i++)
+	printf("%g ",zetaS[i]);
       printf("\n");
     }
 }

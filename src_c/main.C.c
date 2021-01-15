@@ -30,8 +30,11 @@ int main(int argc, char *argv[])
       nscans+=1;
       if((nscans-1)%100==0)
 	printf("%i \n",nscans);
-      process_scan();
-      writescan_();
+      if(istat>=0)
+	{
+	  process_scan();
+	  writescan_();
+	}
     }
 
   printf("%s %4i\n",fname,nscans);
