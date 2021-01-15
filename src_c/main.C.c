@@ -12,6 +12,7 @@ void openoutputfile_(char *jobname, char *fname);
 void writescan_(void);
 void process_scan(void);
 void initp2_(void);
+void closeoutputfile_(void);
 int main(int argc, char *argv[])
 {
   char *fname;
@@ -34,5 +35,6 @@ int main(int argc, char *argv[])
     }
 
   printf("%s %4i\n",fname,nscans);
+  closeoutputfile_();
   //pymain_();
 }
