@@ -36,7 +36,7 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
 {
   float dnCoeff[2]={-0.01257341, -0.00933038};
   int bbb,imu=3,n1d=176,itype=1;
-  float piaKuS,piaKaS,dr=0.125,eps=1.0,epst=1.0,dnst=-0.1;
+  float piaKuS,piaKaS,dr=0.125,eps=1.0,epst=1.0,dnst=-0.2;
   float dpn[176], dzdn[176*176], dpiadn[2*176], dnp[176], zKuC[176], zKaSim[176];
   float dt1,dt2;
   int i;
@@ -52,10 +52,15 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
     }
   else
     {
+      /*iter_profst_nobb(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
+     dn1d,dm1d,rrate1d,zKuC,zKaSim,epst,piaKu,piaKa,itype,dnCoeff_new,&
+     dncv,dnp,dzdn,&
+     dt1,dt2, dpiadn, piaKuS, piaKaS)
+      */
       iter_profst_nobb_(&btop,&bzd,&bcf,&bsfc,
-		       zKu,zKa,&dr,&n1d,&eps,&imu,dn,dm,pRate,zKuC,zKaSim,
-		       &epst,piaKu,piaKa,&itype,&dnst,dnCoeff,
-		       dnp,dzdn,&dt1,&dt2,dpiadn,&piaKuS,&piaKaS);
+			zKu,zKa,&dr,&n1d,&eps,&imu,dn,dm,pRate,zKuC,zKaSim,
+			&epst,piaKu,piaKa,&itype,dnCoeff,
+			&dnst,dnp,dzdn,&dt1,&dt2,dpiadn,&piaKuS,&piaKaS);
       bbb=bzd+2;
     }
   int n1=bcf-bbb+1;

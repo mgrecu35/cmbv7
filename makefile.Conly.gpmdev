@@ -84,7 +84,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o augLagrange.o  #../miniconda3/lib/libstdc++.so
+        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o augLagrange.o  
 
 OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o
 

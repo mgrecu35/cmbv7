@@ -41,7 +41,7 @@ void convretf90_(float *rrate,float *dmOut,float *dm_sub,float *rrate_sub,
 void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
 		float piaSRTKu, int reliabFlagKu, float piadSRT, int reliabFlag,
 		int *nodes5, float *pRate,
-		float *dn, float *dm, float *piaKu, float *piaKa);
+		float *dn, float *dm, float *piaKu, float *piaKa, int sfcType);
 
 void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float *zKu, float *zKa,
 		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
@@ -58,6 +58,7 @@ void process_scan(void)
   int nodes5[5];
   float pRate[176],dn[176], dm[176];
   float piaKu, piaKa;
+  int sfcType;
   for(j=0;j<49;j++)
     {
       swath.NS.Latitude[j]=dprswath.NS.Latitude[j];
@@ -66,6 +67,7 @@ void process_scan(void)
       swath.NS.Input.surfaceElevation[j]=dprswath.NS.PRE.elevation[j];
       swath.NS.Input.localZenithAngle[j]=dprswath.NS.PRE.localZenithAngle[j];
       swath.NS.Input.surfaceType[j]=dprswath.NS.PRE.landSurfaceType[j];
+      sfcType=dprswath.NS.PRE.landSurfaceType[j];
       swath.NS.Input.surfaceRangeBin[j]=(dprswath.NS.PRE.binRealSurface[j]-1)/2;
       swath.NS.Input.stormTopBin[j]=(dprswath.NS.PRE.binStormTop[j]-1)/2;
       btop=dprswath.NS.PRE.binStormTop[j];
@@ -103,7 +105,7 @@ void process_scan(void)
 	       convective(btop,bzd,bcf,bsfc,zKu,zKa,
 			  srtPIAKu,reliabFlagKu, piadSRT, reliabFlag,
 			  nodes5, pRate,
-			  dn, dm, &piaKu, &piaKa);
+			  dn, dm, &piaKu, &piaKa, sfcType);
 	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
 	       if(pRate[bcf]>300 || pRate[bcf]<0)
 		 {
@@ -161,7 +163,7 @@ void iter_profcv2_(int *btop,int *bzd,int *bcf,int *bsfc,float *zKuL,
 void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
 		float srtPIAKu, int reliabFlagKu, float piadSRT, int reliabFlag,
 		int *nodes5, float *pRate,
-		float *dn, float *dm, float *piaKu, float *piaKa)
+		float *dn, float *dm, float *piaKu, float *piaKa, int sfcType)
 {
   float dr=0.125, dncv=0.0, eps=1.0, epst;
   int imu=3, itype=2, n1d=176;
@@ -172,6 +174,8 @@ void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
   float piaKuS,piaKaS;
   for(i=0;i<176;i++)
     dnp[i]=0;
+  if(sfcType==0)
+    dncv=0.1;
   //printf("%i ",bzd);
   iter_profcv2_(&btop,&bzd,&bcf,&bsfc,zKu,
 		zKa,&dr,&n1d,&eps,&imu,dn,dm,pRate,zKuC,
