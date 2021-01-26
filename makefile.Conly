@@ -63,7 +63,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	 weightModule.o	 globModule.o \
 	  lut_routines_sjm.o\
 	 emissModule.o missing_flags.o read_melt_percentages.o\
-	 cloud.o hbprof_new.o convRet.o \
+	 cloud.o convRet.o \
 	absorb.o gcloud.o  \
 	geomask.o f90Types.o allocateMem.o ezlhconv.o readNh.o beamConvP.o beamConvSet.o\
 	resampGMI.o interpol.o geophysEns.o gEnv.o outputminmax.o \
@@ -72,16 +72,21 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o augLagrange.o
+        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o 
 
-OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o
+OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o  hbprof_new.o augLagrange.o
+
+OBJF2PY	=   $(OBJ)
 
 #---Link and create Executable
 combAlg.exe:	$(OBJEXE) 
 		$(CC) -o \
 		combAlg.exe \
-		$(OBJEXE)  $(LIB) $(LIBES) -lxml2 
+		$(OBJEXE)  $(LIB) $(LIBES) -lxml2
 
+libComp.cpython-38-darwin.so:	$(OBJ) readDPR.o
+		f2py -c -m libComp src_f90/hbprof_new.f90 src_f90/augLagrange.f90 src_f90/mainfpy.f90 $(OBJ) readDPR.o $(LIB) $(LIBES) -lxml2
+		
 #---Auxiliary Functions
 clean:	
 	rm -f *.o combAlg.exe *.mod nohup* intern*dat DUMMY*
