@@ -98,9 +98,11 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
 	  printf("\n");
 	  exit(0);
 	}
-      for(k=0;k<n1;k++)
-	pRate[bbb+k]=pRate_out[k];
-      
+      for(k=0;k<-n1;k++)
+	{
+	  pRate[bbb+k]=pRate_out[k];
+	  dm[bbb+k]=dmOut[k];
+	}
       /* rainprofstg_(int *n1,float *zku_obs,float *zka_obs,float *dpiaSRT,
 	 float *piakus,float *piakas, int *reldpia,
 	 int *nc,float *dr,float *wzku,float *wzka,float *wpia,

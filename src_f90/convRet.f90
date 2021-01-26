@@ -119,8 +119,10 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   rrate1d(bzd+1:bcf+1)=0.0
   dm1d(bzd+1:bcf+1)=0.0
   dn1d(bzd+1:bcf+1)=0.0
-  rrate1d_sub=0
-  dm_sub=0
+  if(bzd.lt.bcf) then
+     rrate1d_sub(bzd+1:bcf+1,:)=0
+     dm_sub(bzd+1:bcf+1,:)=0
+  endif
   dn_sub=0
   zkasim_sub=0
   dzdn_sub2=0
@@ -262,7 +264,8 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   beta=0.71
   !print*, bzd,bcf
   !print*, zetaS
-  rrate=0.0
+  if(bzd.lt.bcf) return
+  rrate(bzd+1:bcf+1)=0.0
   do i=1,31
      if(q*beta*zetaS(i)<0.995.and.rrate_sub(bcf,i).lt.250.0.and.&
           rrate_sub(bcf+1,i).lt.250.0) then
