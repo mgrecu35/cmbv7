@@ -5,6 +5,8 @@
 #include "TKheaders.h"
 #include "TK_2ADPR.h"
 #include "TK_1CGMI.h"
+#include <math.h>
+
 TKINFO dprtkfile;
 TKINFO       granuleHandle2AKu;
 L2ADPR_SWATHS dprswath;
@@ -107,6 +109,22 @@ void process_scan(void)
 			  nodes5, pRate,
 			  dn, dm, &piaKu, &piaKa, sfcType);
 	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
+	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
+	       swath.NS.phaseBinNodes[j][4]=(int)(bsfc/2);
+	       swath.NS.phaseBinNodes[j][0]=(int)(btop/2);
+	       swath.NS.phaseBinNodes[j][2]=(int)(bzd/2);
+	       for(k=0;k<btop;k=k+2)
+		 {
+		   int k2=(int)(k/2);
+		   swath.NS.precipTotRate[j][k2]=0;
+		 }
+	       for(k=btop;k<bcf;k=k+2)
+		 {
+		   int k2=(int)(k/2);
+		   swath.NS.precipTotRate[j][k2]=pRate[k];
+		   swath.NS.precipTotPSDparamHigh[j][k2]=dm[k];
+		 }
+	       //
 	       if(pRate[bcf]>300 || pRate[bcf]<0)
 		 {
 		   printf("%i %g %g %g %i\n",j,pRate[bcf],srtPIAKu,zKu[bcf],
@@ -140,6 +158,21 @@ void process_scan(void)
 		   exit(0);
 		 }
 	       swath.NS.surfPrecipTotRate[j]=pRate[bcf];
+	       swath.NS.phaseBinNodes[j][4]=(int)(bsfc/2);
+	       swath.NS.phaseBinNodes[j][0]=(int)(btop/2);
+	       swath.NS.phaseBinNodes[j][2]=(int)(bzd/2);
+	       for(k=0;k<btop;k=k+2)
+		 {
+		   int k2=(int)(k/2);
+		   swath.NS.precipTotRate[j][k2]=0;
+		 }
+	       for(k=btop;k<bcf;k=k+2)
+		 {
+		   int k2=(int)(k/2);
+		   swath.NS.precipTotRate[j][k2]=pRate[k];
+		   swath.NS.precipTotPSDparamHigh[j][k2]=dm[k];
+		 }
+	       //
 	       //if(!(binBB>0))
 	       // printf("%g %g %g %g\n",piaKu,piaKa,pRate[bcf],zKu[bcf]);
 	       //printf("%g %g %g\n",piaKu,piaKa,pRate[bcf]);
@@ -185,9 +218,9 @@ void convective(int btop,int bzd,int bcf,int bsfc, float *zKu, float *zKa,
 		dm_sub,zkuc_sub,piahb_sub,piaKa_sub,zetaS,&piaKuS,&piaKaS);
   //printf("%i \n",bzd);
  
-  if(bzd>100 && bzd<176)
-    convretf90_(pRate,dm,dm_sub,rrate1d_sub,&bzd,&bcf,piaKa_sub,piahb_sub,
-		&srtPIAKu,&piadSRT,&reliabFlagKu,&reliabFlag,zetaS);
+  //if(bzd>100 && bzd<176)
+  convretf90_(pRate,dm,dm_sub,rrate1d_sub,&bzd,&bcf,piaKa_sub,piahb_sub,
+  	      &srtPIAKu,&piadSRT,&reliabFlagKu,&reliabFlag,zetaS);
   if(isnan(pRate[bcf]))
     {
 

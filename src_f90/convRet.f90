@@ -21,7 +21,8 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   real :: ftran, probs(31), sumprob,  zeta1d(n1d,31), q
   real,intent(out) :: rrate1d_sub(n1d,31), dn_sub(n1d,31), dm_sub(n1d,31), zkuc_sub(n1d,31), piahb_sub(31)
   real,intent(out) :: piaKa_sub(31),zetaS(31)
-  real :: piaKuS, piaKaS, beta, piamax, attKu, attKa, dn, dni
+  real,intent(out) :: piaKuS, piaKaS
+  real :: beta, piamax, attKu, attKa, dn, dni
   real :: dnCoeff(2)=(/-0.00570364,  0.13319214/)
   real :: dmCoeff(3)= (/-2.56885571e-04,  7.18909743e-02, -1.60889523e+00/)
   !(/-4.57599678e-04,  7.852247958e-02, -1.78316499e+00/)
@@ -253,7 +254,8 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
      piaSRTKu,dpiaSRT,relFlagKu,relFlag,zetaS)
   implicit none
   integer :: bzd,bcf
-  real :: rrate(176), dmOut(176), dm_sub(176,31), rrate_sub(176,31), piaka_sub(31),&
+  real,intent(out) :: rrate(176), dmOut(176)
+  real :: dm_sub(176,31), rrate_sub(176,31), piaka_sub(31),&
        piahb_sub(31), zetaS(31)
   real :: probS,prob1,q,beta
   real :: dpiaSRT, piaSRTKu
@@ -264,8 +266,9 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   beta=0.71
   !print*, bzd,bcf
   !print*, zetaS
-  if(bzd.lt.bcf) return
-  rrate(bzd+1:bcf+1)=0.0
+  if(bzd.lt.bcf) then 
+     rrate(bzd+1:bcf+1)=0.0
+  endif
   do i=1,31
      if(q*beta*zetaS(i)<0.995.and.rrate_sub(bcf,i).lt.250.0.and.&
           rrate_sub(bcf+1,i).lt.250.0) then

@@ -63,7 +63,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	 weightModule.o	 globModule.o \
 	  lut_routines_sjm.o\
 	 emissModule.o missing_flags.o read_melt_percentages.o\
-	 cloud.o convRet.o \
+	 cloud.o \
 	absorb.o gcloud.o  \
 	geomask.o f90Types.o allocateMem.o ezlhconv.o readNh.o beamConvP.o beamConvSet.o\
 	resampGMI.o interpol.o geophysEns.o gEnv.o outputminmax.o \
@@ -74,7 +74,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	filterUp1.o\
         kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o 
 
-OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o  hbprof_new.o augLagrange.o
+OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o  hbprof_new.o augLagrange.o convRet.o 
 
 OBJF2PY	=   $(OBJ)
 
@@ -85,7 +85,8 @@ combAlg.exe:	$(OBJEXE)
 		$(OBJEXE)  $(LIB) $(LIBES) -lxml2
 
 libComp.cpython-38-darwin.so:	$(OBJ) readDPR.o
-		f2py -c -m libComp src_f90/hbprof_new.f90 src_f90/augLagrange.f90 src_f90/mainfpy.f90 $(OBJ) readDPR.o $(LIB) $(LIBES) -lxml2
+		f2py -c -m libComp src_f90/hbprof_new.f90 src_f90/augLagrange.f90 src_f90/mainfpy.f90 \
+		src_f90/convRet.f90 $(OBJ) readDPR.o $(LIB) $(LIBES) -lxml2
 		
 #---Auxiliary Functions
 clean:	

@@ -161,8 +161,8 @@ subroutine rainprofstg(n1,zku_obs,zka_obs,dpiaSRT,piakus,piakas,&
      rn=normal2(0.0,1.0)
      do i=1,n1
         if (zku_obs(i).gt.10) then
-           rn=0.75*rn+0.25*normal2(0.0,1.0)
-           dnp=dn_out(i)-0.1+rn*0.5
+           rn=0.5*rn+0.5*normal2(0.0,1.0)
+           dnp=dn_out(i)-0.0+rn*0.5
            rrn=normal2(0.0,0.2)
            call bisection2(logRJ,nbins,rrn+logrrate(i)-dnp,n1j)
            rrens(it,i)=10**(logrrate(i)+rrn)

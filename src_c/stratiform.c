@@ -69,6 +69,7 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
   float *pRate_out,*dn_out,*zkusimE,*zkasimE,
     *zku_out,*zka_out,*rrEns,*yEns,*xEns,*dy,*pia_out,*dmOut,*attOut,*zkusim,*zkasim;
   nc=bsfc-bcf;
+  //  printf("%i %i \n",bcf,bbb);
   if(n1>1)
     {
       //printf("%i %i %i %g %g \n",n1, bbb,bcf,piaKaS,piaKuS);
@@ -98,7 +99,8 @@ void stratiform(int btop,int bzd,int bcf,int bsfc, int binBB, int binBBT, float 
 	  printf("\n");
 	  exit(0);
 	}
-      for(k=0;k<-n1;k++)
+      //  printf("%6.2f %6.2f \n",pRate[bbb+n1-1],pRate_out[n1-1]);
+      for(k=0;k<n1;k++)
 	{
 	  pRate[bbb+k]=pRate_out[k];
 	  dm[bbb+k]=dmOut[k];
