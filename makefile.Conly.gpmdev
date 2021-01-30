@@ -49,7 +49,7 @@ HDF5_INC=/usr/local/HDF5/include/
 HDF4_LIB=/usr/local/HDF4/lib/
 HDF5_LIB=/usr/local/HDF5/lib/
 
-TKIO=/PANFS/user/home/tkio/tkio-3.93
+TKIO=/PANFS/user/home/tkio/tkio-3.96
 						 
 #---Required include files
 INC=    -I$(HDF4_INC)\
@@ -86,7 +86,7 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	filterUp1.o\
         kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o augLagrange.o  
 
-OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o
+OBJEXE	=    $(OBJ)  main.Cext.o  mainfpy.o readDPR.o
 
 #---Link and create Executable
 combAlg.exe:	$(OBJEXE) 
@@ -105,6 +105,9 @@ test_1CGMI_h5.o:	src_c/test_1CGMI_h5.c
 
 main.C.o: src_c/main.C.c
 						 $(CC) $(INC) -c -O2 src_c/main.C.c
+
+main.Cext.o: src_c/main.Cext.c
+						 $(CC) $(INC) -c -O2 src_c/main.Cext.c
 
 readDPR.o: src_c/readDPR.c
 						 $(CC) $(INC) -c -O2 src_c/readDPR.c

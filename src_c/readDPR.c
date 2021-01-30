@@ -10,6 +10,7 @@
 TKINFO dprtkfile;
 TKINFO       granuleHandle2AKu;
 L2ADPR_SWATHS dprswath;
+L2ADPRX_SWATHS dprswathx;
 void openoutputfile_(char *jobname, char *fname);
 int DayOfMonth[300], DayOfYear[300], Hour[300], MilliSecond[300],
   Minute[300], Month[300], Second[300], Year[300], SecondOfDay[300];
@@ -32,6 +33,28 @@ int read_dpr(int iscan)
   if((TKendOfFile (&dprtkfile) != TK_EOF))
     {
       status=TKreadScan(&dprtkfile,&dprswath);
+    }
+  return status;
+}
+
+void open_dprx(char *dprfname)
+{
+  int status_alpha;
+  char *jobname;
+  jobname=(char*)malloc(sizeof(char)*30);
+  sprintf(jobname,"junk");
+  status_alpha = TKopen(dprfname,"2ADPRX",TKREAD,"HDF5",jobname,&dprtkfile,1);
+  printf("%i %s\n",status_alpha,dprfname);
+}
+
+int read_dprx(int iscan)
+{
+  int status=-1;
+  status = TKseek(&dprtkfile, iscan, TK_ABS_SCAN_OFF);
+  status=-1;
+  if((TKendOfFile (&dprtkfile) != TK_EOF))
+    {
+      status=TKreadScan(&dprtkfile,&dprswathx);
     }
   return status;
 }
