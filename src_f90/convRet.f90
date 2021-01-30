@@ -109,7 +109,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   if(piamax<0) piamax=56-zKuL(bcf+1)
   if(piamax<0) piamax=4
   q=0.2*log(10.0)
-  zKuC(bzd+1:bcf+1)=zKuL(bzd+1:bcf+1)+piaKuS
+  zKuC(bzd:bcf+1)=zKuL(bzd:bcf+1)+piaKuS
   epst=eps
   attKu=0.0
   attKa=0.0
@@ -117,19 +117,19 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   zeta1d=0
   sumprob=0
   piaKu=0.0
-  rrate1d(bzd+1:bcf+1)=0.0
+  rrate1d(bzd:bcf+1)=0.0
   dm1d(bzd+1:bcf+1)=0.0
   dn1d(bzd+1:bcf+1)=0.0
-  if(bzd.lt.bcf) then
-     rrate1d_sub(bzd+1:bcf+1,:)=0
-     dm_sub(bzd+1:bcf+1,:)=0
+  if(bzd.le.bcf) then
+     rrate1d_sub(bzd:bcf+1,:)=0
+     dm_sub(bzd:bcf+1,:)=0
   endif
   dn_sub=0
   zkasim_sub=0
   dzdn_sub2=0
   dzdn_sub1=0
-  zkasim(bzd+1:bcf+1)=0
-  dzdn(bzd+1:bcf+1,bzd+1:bcf+1)=0
+  zkasim(bzd:bcf+1)=0
+  dzdn(bzd:bcf+1,bzd:bcf+1)=0
   call cpu_time(finish1)
   ddn=0.025
 !!$OMP PARALLEL DO  PRIVATE(k,dn,n1,attKu,attKa,zKa1,zKa2)
@@ -266,9 +266,11 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   beta=0.71
   !print*, bzd,bcf
   !print*, zetaS
-  if(bzd.lt.bcf) then 
+  if(bzd.le.bcf) then 
      rrate(bzd+1:bcf+1)=0.0
   endif
+  !print*, rrate_sub(bcf+1,:), rrate(bcf+1)
+  !print*, 'bzd',bzd, bcf
   do i=1,31
      if(q*beta*zetaS(i)<0.995.and.rrate_sub(bcf,i).lt.250.0.and.&
           rrate_sub(bcf+1,i).lt.250.0) then
@@ -288,6 +290,11 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
         probS=probS+prob1
      endif
   end do
-  rrate=rrate/probS
-  dmOut=dmOut/probS
+  !print*,rrate(bcf+1), probS
+  if(bzd.le.bcf) then 
+     rrate(bzd+1:bcf+1)=rrate(bzd+1:bcf+1)/probS
+     dmOut(bzd+1:bcf+1)=dmOut(bzd+1:bcf+1)/probS
+  endif
+  !print*,rrate(bcf+1)
+  
 end subroutine convRetf90
