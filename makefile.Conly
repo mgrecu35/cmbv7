@@ -58,12 +58,12 @@ LIBES = -ltkctkTSDIS -ltkcselect -ltkchdf4algs -ltkchdf4 \
 
 
 #---Compile Stages
-OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
-	 bisection.o f90DataTypes.o  random.o  writegif.o nbin.o \
-	 weightModule.o	 globModule.o \
-	  lut_routines_sjm.o\
-	 emissModule.o missing_flags.o read_melt_percentages.o\
-	 cloud.o \
+OBJ =	readTables_nonsph.o \
+	bisection.o f90DataTypes.o  random.o  writegif.o nbin.o \
+	weightModule.o	 globModule.o \
+	lut_routines_sjm.o\
+	emissModule.o missing_flags.o read_melt_percentages.o\
+	cloud.o \
 	absorb.o gcloud.o  \
 	geomask.o f90Types.o allocateMem.o ezlhconv.o readNh.o beamConvP.o beamConvSet.o\
 	resampGMI.o interpol.o geophysEns.o gEnv.o outputminmax.o \
@@ -72,9 +72,9 @@ OBJ =	 test_1CGMI_h5.o readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
         convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-        kgainBLAS.o getScattProp.o armadillo_funcs.o writeCMBOut_TK.o stratiform.o 
+        kgainBLAS.o getScattProp.o armadillo_funcs.o  stratiform.o 
 
-OBJEXE	=    $(OBJ)  main.C.o  mainfpy.o readDPR.o  hbprof_new.o augLagrange.o convRet.o 
+OBJEXE	=    $(OBJ)  mainfpy.o readDPR.o  hbprof_new.o augLagrange.o convRet.o 
 
 OBJF2PY	=   $(OBJ)
 
@@ -84,9 +84,9 @@ combAlg.exe:	$(OBJEXE)
 		combAlg.exe \
 		$(OBJEXE)  $(LIB) $(LIBES) -lxml2
 
-libComp.cpython-38-darwin.so:	$(OBJ) readDPR.o
-		f2py -c -m libComp src_f90/hbprof_new.f90 src_f90/augLagrange.f90 src_f90/mainfpy.f90 \
-		src_f90/convRet.f90 $(OBJ) readDPR.o $(LIB) $(LIBES) -lxml2
+libComp.cpython-39-darwin.so:	$(OBJ) readDPR.o
+		f2py -c -m libComp -L/Users/mgrecu/multiscatter-1.2.10/lib src_f90/hbprof_new.f90 src_f90/augLagrange.f90 src_f90/mainfpy.f90 \
+		src_f90/convRet.f90 $(OBJ) -lblas -lmultiscatter
 		
 #---Auxiliary Functions
 clean:	
