@@ -19,7 +19,7 @@
 !//  SFM  end    06/22/2014
 subroutine interpol(xn,yn,n,fint)
   implicit none
-  integer :: xn(n)
+  integer :: n,xn(n)
   real :: yn(n), fint(88)
   integer :: i,n1
   real :: f
@@ -35,16 +35,16 @@ end subroutine interpol
 subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
      pia35m,pia13m,z35mod,pwc,dr,ic,jc,hh,nmfreq,salb,kext,asym,&
      itype,ngates,rrate,dm,log10dn,z13,z35,hfreez,pia13srt,relpia13srt,&
-     pia35sr,relpia35st)
+     pia35srt,relpia35srt,imemb,xs,nstdA)
   implicit none
-  integer :: ngates
+  integer :: ngates, imemb,ithresh
   real :: log10dnP(nNodes)
   integer :: nodeP(nNodes),nNodes
   real, intent(out) :: pia35m,pia13m,z35mod(ngates),pwc(ngates)
-  real :: dr,ic,jc,hh(ngates),
+  real :: dr,ic,jc,hh(ngates)
   integer :: nmfreq
-  real :: intent(out) :: salb(ngates,nmfreq),kext(ngates,nmfreq),asym(ngates,nmfreq)
-  integer ::  itype
+  real, intent(out) :: salb(ngates,nmfreq),kext(ngates,nmfreq),asym(ngates,nmfreq)
+  integer ::  itype, ifreq
   real :: rrate(ngates),dm(ngates),log10dn(ngates),z13(ngates),z35(ngates),hfreez
   real :: pia13srt,pia35srt
   integer :: relpia35srt,relpia13srt
@@ -69,6 +69,7 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
   integer :: iSub
   real :: tau
   integer :: count
+  real  :: nstd, sxs, xs(50), nstdA
   
   pia13tot=0
   pia35tot=0
@@ -84,7 +85,7 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
   
   sxs=sxs/nSub
   do i=1,nsub
-     xs(i)=x(i)/sxs
+     xs(i)=xs(i)/sxs
      xs(i)=10.*log10(xs(i));
   enddo
   
@@ -127,23 +128,23 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
         if(z13obsP(j)>50) z13obsP(j)=50
      enddo
      call fhb11(z13,z35,z13obsP, &
-          pia13M,pia35M,&ic,&jc,z35mod,pwc,log10dN, &
+          pia13M,pia35M,ic,jc,z35mod,pwc,log10dN, &
           dr,node,isurf,imuv, &
           ngates,nmfreq,hh,itype,kext,salb,asym, &
           rrate,dm,hfreez, pia13srt,imemb)
 
       if(z13obs(node(5))>12) then
          z13sfc=z13sfc+10**(0.1*z13(node(5)))
-         z13sfcA=z13sfcA+10**(0.1*z13(node(5))-0.1*(*pia13M))
+         z13sfcA=z13sfcA+10**(0.1*z13(node(5))-0.1*(pia13M))
          z35sfc=z35sfc+10**(0.1*z35(node(5)));
-         z35sfcA=z35sfcA+10**(0.1*z35(node(5))-0.1*(*pia35M))
+         z35sfcA=z35sfcA+10**(0.1*z35(node(5))-0.1*(pia35M))
          ithresh=ithresh+1
       endif
       ic=0;
       pia13tot=pia13tot+pia13M
       pia35tot=pia35tot+pia35M
-      l_13(i)=10**(-0.1*(*pia13M))
-      l_35(i)=10**(-0.1*(*pia35M))
+      l_13(i)=10**(-0.1*(pia13M))
+      l_35(i)=10**(-0.1*(pia35M))
 
       
       kextSub(:,:,i)=kext
@@ -176,14 +177,14 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
    end do
    
    do i=node(1),node(5)
-      if(z13obs[i]>12) then
+      if(z13obs(i)>12) then
          do isub=1,nSub
             if(kextSub(i,1,iSub)>0) then
                z35mod(i)=z35mod(i)+10**(0.1*z35modSub(i,iSub))
                z13(i)=z13(i)+10**(0.1*z13Sub(i,iSub))
                z35(i)=z35(i)+10**(0.1*z35Sub(i,iSub))
                rrate(i)=rrate(i)+rrateSub(i,iSub)
-               pwc(i)+=pwcSub(i,iSub)
+               pwc(i)=pwc(i)+pwcSub(i,iSub)
                dm(i)=dm(i)+dmSub(i,iSub)
                countSub(i)=countSub(i)+1
             endif
@@ -197,7 +198,7 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
       else
          pia13M=pia13tot/nSub
       endif
-      if(z35sfcA>0.01 && z35sfc>0.01) then
+      if(z35sfcA>0.01 .and. z35sfc>0.01) then
          pia35M=log10(z35sfc/z35sfcA)*10.
       else
          pia35M=pia35tot/nSub
@@ -237,16 +238,16 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
          asymAvg(j,ifreq)=0
          do i=1,nSub
             if(kextSub(j,ifreq,iSub)>0) then
-               kextAvg(j,ifreq)+=kextSub(j,ifreq,iSub)
-               salbAvg(j,ifreq)+=salbSub(j,ifreq,iSub)
-               asymAvg(j,ifreq)+=asymSub(j,ifreq,iSub)
+               kextAvg(j,ifreq)=kextAvg(j,ifreq)+kextSub(j,ifreq,iSub)
+               salbAvg(j,ifreq)=salbAvg(j,ifreq)+salbSub(j,ifreq,iSub)
+               asymAvg(j,ifreq)=asymAvg(j,ifreq)+asymSub(j,ifreq,iSub)
                count=count+1;
             endif
          enddo
          if(count>0) then
-            kextAvg(j,ifreq)/=count;
-            salbAvg(j,ifreq)/=count;
-            asymAvg(j,ifreq)/=count;
+            kextAvg(j,ifreq)=kextAvg(j,ifreq)/count;
+            salbAvg(j,ifreq)=salbAvg(j,ifreq)/count;
+            asymAvg(j,ifreq)=asymAvg(j,ifreq)/count;
          else
             kextAvg(j,ifreq)=-99;
             salbAvg(j,ifreq)=-99;
@@ -266,9 +267,9 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
 
    
 
-   if(isinf(pia35M)) then
-      pia35M=pia35tot/nSub
-   endif
+   !if(isinf(pia35M)) then
+   !   pia35M=pia35tot/nSub
+   !endif
      
    do j=1,88
       if(log10dN(j)>4.5) log10dN(j)=4.5
