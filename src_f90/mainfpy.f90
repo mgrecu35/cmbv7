@@ -5,7 +5,9 @@
 !microwave table freq 19.0 37. 10. 85
 !TMIchannel freq  10.0, 19.0, 21, 37, 85! V,H
 !npol 0 H, npol 1 V
-
+module init_vars
+  integer :: ifirst
+end module init_vars
 
 SUBROUTINE init_random_seed(rseed1, rseed2)
   INTEGER :: rseed1, rseed2, n, clock

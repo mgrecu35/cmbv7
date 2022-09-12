@@ -41,7 +41,7 @@ module f90DataTypes
 
   type geoDataType
      
-     byte:: lsflag(1080,2160)
+     integer*1:: lsflag(1080,2160)
      integer*2 :: sstdata(91,144,12)
      integer   :: month
   end type geoDataType

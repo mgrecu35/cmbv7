@@ -58,11 +58,11 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
            if (k.lt.bzd) then
               ztrue=zKuC(k+1)
            end if
-           if(ztrue.lt.40) then
+           if(ztrue.lt.42) then
               ztrueS=ztrue
               ztrueH=0.0
            else
-              ztrueS=40
+              ztrueS=42
               ztrueH=10*log10(10**(0.1*ztrue)-10**(0.1*39.999))
            endif
            !n1,n2=bisection(zKuSJ,ztrueS-10*dns[k+1])
@@ -117,19 +117,19 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
   zeta1d=0
   sumprob=0
   piaKu=0.0
-  rrate1d(bzd:bcf+1)=0.0
+  rrate1d(bzd+1:bcf+1)=0.0
   dm1d(bzd+1:bcf+1)=0.0
   dn1d(bzd+1:bcf+1)=0.0
   if(bzd.le.bcf) then
-     rrate1d_sub(bzd:bcf+1,:)=0
-     dm_sub(bzd:bcf+1,:)=0
+     rrate1d_sub(bzd+1:bcf+1,:)=0
+     dm_sub(bzd+1:bcf+1,:)=0
   endif
   dn_sub=0
   zkasim_sub=0
   dzdn_sub2=0
   dzdn_sub1=0
-  zkasim(bzd:bcf+1)=0
-  dzdn(bzd:bcf+1,bzd:bcf+1)=0
+  zkasim(bzd+1:bcf+1)=0
+  dzdn(bzd+1:bcf+1,bzd:bcf+1)=0
   call cpu_time(finish1)
   ddn=0.025
 !!$OMP PARALLEL DO  PRIVATE(k,dn,n1,attKu,attKa,zKa1,zKa2)
@@ -138,7 +138,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
      do k=bzd,bcf
         if (zKuL(k+1).gt.10) then
            call bisection2(zKudN,nbins,zKuL(k+1)+piaKuS-10*(isub-16)*ddn-10*dncv, n1)
-           dn_sub(k+1,isub)=(zKudN(n1)-zKuSJ(n1))/10.0+(isub-16)*ddn+dncv
+           dn_sub(k+1,isub)=0.5*(zKudN(n1)-zKuSJ(n1))/10.0+(isub-16)*ddn+dncv
            dn=dn_sub(k+1,isub)
            attKu=att13Table(n1,imu)*10**dn
            attKa=att35Table(n1,imu)*10**dn
@@ -148,6 +148,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
            end if
            zeta1d(k+1,isub)=zetaS(isub)
         else
+           zeta1d(k+1,isub)=zetaS(isub)
            attKu=0.0
            attKa=0.0
         endif
@@ -192,7 +193,7 @@ subroutine iter_profcv2(btop,bzd,bcf,bsfc,zKuL,zKaL,dr,n1d,eps,imu,&
            end if
         end do
         piaKa_sub(isub)=piaKa_sub(isub)+attKa*(bsfc-bcf)*2*dr
-        probs(isub)=exp(-((isub-16)*ddn)**2/0.5**2)
+        probs(isub)=exp(-(0.5-(isub-16)*ddn)**2/0.5**2)
         if(rrate1d_sub(bcf+1,isub).gt.150) probs(isub)=probs(isub)*0.9
      else
         probs(isub)=0.0
@@ -258,7 +259,7 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   real :: dm_sub(176,31), rrate_sub(176,31), piaka_sub(31),&
        piahb_sub(31), zetaS(31)
   real :: probS,prob1,q,beta
-  real :: dpiaSRT, piaSRTKu
+  real :: dpiaSRT, piaSRTKu, ddn
   integer  :: relFlag,relFlagKu 
   integer :: i, k
   probS=0
@@ -271,19 +272,22 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   endif
   !print*, rrate_sub(bcf+1,:), rrate(bcf+1)
   !print*, 'bzd',bzd, bcf
+  ddn=0.025
   do i=1,31
      if(q*beta*zetaS(i)<0.995.and.rrate_sub(bcf,i).lt.250.0.and.&
           rrate_sub(bcf+1,i).lt.250.0) then
+        prob1=exp(-(0.5-(i-16)*ddn)**2/0.5**2)
         if (relFlag==1 .and. dpiaSRT<20) then
-           prob1=exp(-0.5*(piaka_sub(i)-piahb_sub(i)-dpiaSRT)**2/2.0)
+           prob1=exp(-0.5*(piaka_sub(i)-piahb_sub(i)-dpiaSRT)**2/2.0)*prob1
         else
-           prob1=1.0
+           prob1=prob1
         endif
-        if(relFlagKu==1 .and. piaSRTKu>5.0) then
+        if(relFlagKu==1 .and. piaSRTKu>1.0) then
            prob1=prob1*exp(-0.5*(piahb_sub(i)-piaSRTKu)**2/4.0)
         end if
         prob1=prob1+1e-9
-        do k=bzd+1,bcf+1
+        !print*, prob1
+        do k=bzd,bcf+1
            rrate(k)=rrate(k)+prob1*rrate_sub(k,i)
            dmOut(k)=dmOut(k)+prob1*dm_sub(k,i)
         end do
@@ -292,8 +296,8 @@ subroutine convRetf90(rrate,dmOut,dm_sub,rrate_sub,bzd,bcf,piaka_sub,piahb_sub,&
   end do
   !print*,rrate(bcf+1), probS
   if(bzd.le.bcf) then 
-     rrate(bzd+1:bcf+1)=rrate(bzd+1:bcf+1)/probS
-     dmOut(bzd+1:bcf+1)=dmOut(bzd+1:bcf+1)/probS
+     rrate(bzd:bcf+1)=rrate(bzd:bcf+1)/probS
+     dmOut(bzd:bcf+1)=dmOut(bzd:bcf+1)/probS
   endif
   !print*,rrate(bcf+1)
   
