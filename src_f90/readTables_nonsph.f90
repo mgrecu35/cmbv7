@@ -143,7 +143,7 @@ subroutine readTablesDSDWG(extnmu,extnmfreq)
   do imu=1,extnmu
 
      write(mus,'(A2,I2.2)') '0p',imu*6+11
-     open(10,file='TablesN/DmSm_aSy'//mus//'_sphere_Dmax3p0Dm_rain.dat')
+     open(10,file='supportData/TablesN/DmSm_aSy'//mus//'_sphere_Dmax3p0Dm_rain.dat')
      print*, 'TablesN/DmSm_aSy'//mus//'_sphere_Dmax3p0Dm_rain.dat'
 
      do i=1,nbins       
@@ -254,12 +254,12 @@ subroutine readTables2(extnmu,extnmfreq)
      mu=imu-3.
 !begin  WSO 8/8/13
      mu_tab(imu) = mu
-     write(*, '("imu: ", i5, "  mu: ", f10.4, "  mu_tab: ", f10.4)') imu, mu, mu_tab(imu)
+     !write(*, '("imu: ", i5, "  mu: ", f10.4, "  mu_tab: ", f10.4)') imu, mu, mu_tab(imu)
 !end    WSO 8/8/13
-     write(mus,20) mu
+     !write(mus,20) mu
      if(mus(1:1).ne.'-') mus(1:1)='0'
      
-     open(10,file='TablesN/tables.13-35GHz.mu.'//mus)
+     open(10,file='supportData/TablesN/tables.13-35GHz.mu.'//mus)
      !print*, 'TablesN/tables.13-35GHz.mu.'//mus, imu, extnmu
      read(10,*) dpwc35(imu), pwc35min(imu)
      read(10,*) dpwc35BB(imu), pwc35minBB(imu)
@@ -287,7 +287,7 @@ subroutine readTables2(extnmu,extnmfreq)
      close(10)
      mfreq(7)=186.
      mfreq(8)=190.
-     open(10,file='TablesN/tables.microw.mu.'//mus)
+     open(10,file='supportData/TablesN/tables.microw.mu.'//mus)
      read(10,*) nmfreq
      read(10,*) (mfreq(i),i=1,nmfreq-2)       ! reads the microwave frequencies
      do i=1,nbins
@@ -384,7 +384,7 @@ subroutine readTablesLiang(extnmu,extnmfreq)
      mu=imu-3.
 !begin  WSO 8/8/13
      mu_tab(imu) = mu
-     write(*, '("imu: ", i5, "  mu: ", f10.4, "  mu_tab: ", f10.4)') imu, mu, mu_tab(imu)
+     !write(*, '("imu: ", i5, "  mu: ", f10.4, "  mu_tab: ", f10.4)') imu, mu, mu_tab(imu)
 !end    WSO 8/8/13
      write(mus,20) mu
      if(mus(1:1).ne.'-') mus(1:1)='0'
@@ -453,7 +453,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
   allocate(i0BBmax(nmu))
   allocate(ibranch(nmu))
   allocate(mfreq(nmfreq))
-  print*, nmfreq
+  !print*, nmfreq
   !stop
   allocate( z13Table(nbins,nmu), att13Table(nbins,nmu), &
        pwc13Table(nbins,nmu))
@@ -539,13 +539,14 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
      mu=imu-3.
 !begin  WSO 8/8/13
      mu_tab(imu) = mu
-     write(*, '("imu: ", i5, "  mu: ", f10.4, "  mu_tab: ", f10.4)') imu, mu, mu_tab(imu)
+     !write(*, '("imu: ", i5, "  mu: ", f10.4, "  mu_tab: ", f10.4)') imu, mu, mu_tab(imu)
 !end    WSO 8/8/13
      write(mus,20) mu
-     
+     !print*, mus
+     !stop
      if(mus(1:1).ne.'-') then 
         mus(1:1)='0'
-        open(10,file='TablesN/tables.microw.mu.'//mus)
+        open(10,file='supportData/TablesN/tables.microw.mu.'//mus)
         read(10,*) nmfreq
         read(10,*) (mfreq(i),i=1,nmfreq)  
         nmfreq=extnmfreq
@@ -556,7 +557,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
 !begin  WSO 12/30/13 insert Dm-indexed tables
 !     open(10,file='nw_d0_dsd/snowgTables.rho01.mu2.2')
 
-     open(10,file='nw_dm_dsd/snowTableRho0.3')
+     open(10,file='supportData/nw_dm_dsd/snowTableRho0.3')
      read(10,*) nbinG
      read(10,*) dumfreq
      do i=1,nbinG
@@ -586,7 +587,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
      close(10)
 
      
-     open(10,file='nw_dm_dsd/snowTableRho0.8')
+     open(10,file='supportData/nw_dm_dsd/snowTableRho0.8')
      read(10,*) nbinH
      read(10,*) dumfreq
      do i=1,nbinH
@@ -617,7 +618,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
 
 !begin WSO 12/12/16 replace spherical snow tables with nonspherical snow tables
 !     open(10,file='nw_dm_dsd/snowTableRho0.1')
-     open(10,file='nw_dm_dsd/table.dda.266.mu2.dm.Dec1.2016')
+     open(10,file='supportData/nw_dm_dsd/table.dda.266.mu2.dm.Dec1.2016')
 !end   WSO 12/12/16
      read(10,*) nbinS2
      read(10,*) dumfreq
@@ -633,7 +634,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
      enddo
      do j=1,7
         read(10,*) dumfreq
-        print*, dumfreq
+        !print*, dumfreq
         do i=1,nbinS2
            read(10,*) idum, kextTableS2(i,j,imu), salbTableS2(i,j,imu), &
                 asymTableS2(i,j,imu), dum1, dum2
@@ -648,7 +649,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
      close(10)
 
 
-     open(10,file='nw_dm_dsd/snowgTables.Dm.rho01.mu2.2')!end    WSO 12/30/13      
+     open(10,file='supportData/nw_dm_dsd/snowgTables.Dm.rho01.mu2.2')!end    WSO 12/30/13      
      
      do i=1,nbins
         read(10,*) &
@@ -686,7 +687,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
      close(10)
      
 !begin  WSO 12/30/13 insert Dm-indexed tables
-     open(10,file='nw_dm_dsd/raingTables.Dm.rho01.mu2.2') !Sept 17, 2015 MG
+     open(10,file='supportData/nw_dm_dsd/raingTables.Dm.rho01.mu2.2') !Sept 17, 2015 MG
      !open(10,file='nw_dm_dsd/raingTables.Dm.rho01.u.mu3')
 !end    WSO 12/30/13
      
@@ -723,7 +724,7 @@ subroutine readTablesLiang2(extnmu,extnmfreq)
      
 !begin  WSO 12/30/13 insert Dm-indexed tables
 !     open(10,file='nw_d0_dsd/bbgTables.rho01.mu2.2')
-     open(10,file='nw_dm_dsd/bbgTables.Dm.rho02.mu2.2')
+     open(10,file='supportData/nw_dm_dsd/bbgTables.Dm.rho02.mu2.2')
 !end    WSO 12/30/13
 
      

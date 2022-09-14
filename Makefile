@@ -61,7 +61,7 @@ OBJ =	readTables_nonsph.o \
 	rterain.o radtran_tau_dble.o\
     convPix2.py.o latlon.o setOpt.o convAllFreq.o asciiCon.o writeEnKF.o screenocean.o\
 	filterUp1.o\
-    kgainBLAS.o 
+    kgainBLAS.o ensForestReg.o keras_def.o
 
 OBJEXE	=    $(OBJ)  mainfpy.o readDPR.o  hbprof_new.o augLagrange.o convRet.o 
 
@@ -73,10 +73,11 @@ libcAlg.so:	$(OBJ)
 		libcAlg.so \
 		$(OBJ)  $(LIB) -lblas -lmultiscatter
 
-cAlg.cpython-39-darwin.so:	$(OBJ) src_f90/hbprof_new.f90  src_f90/fModelFortran.f90 src_f90/mainfpy.f90
+cAlg.cpython-39-darwin.so:	$(OBJ) src_f90/hbprof_new.f90  src_f90/fModelFortran.f90 src_f90/mainfpy.f90\
+		src_f90/ensForest_F90.f90 FKB/test_keras.f90
 		f2py -c -m cAlg -L/Users/mgrecu/multiscatter-1.2.10/lib  src_f90/hbprof_new.f90  src_f90/fModelFortran.f90 \
-		src_f90/mainfpy.f90 \
-		src_f90/convRet.f90 $(OBJ)  libcAlg.so		
+		src_f90/mainfpy.f90 src_f90/ensForest_F90.f90 FKB/test_keras.f90 \
+		$(OBJ)  libcAlg.so	FKB/build/lib/libneural.a	
 #---Auxiliary Functions
 clean:	
 	rm -f *.o combAlg.exe *.mod nohup* intern*dat DUMMY*
@@ -113,6 +114,9 @@ sst.rend.o:     src_f90/sst.rend.f90 src_f90/f90DataTypes.f90
 f90DataTypes.o:	src_f90/f90DataTypes.f90 
 		$(F90) -c  -O2 src_f90/f90DataTypes.f90 
 
+keras_def.o:	FKB/keras_def.f90
+	gfortran -c -fPIC -I FKB/build/include/ FKB/keras_def.f90 
+
 f90Types.o:	src_f90/f90Types.f90 
 		$(F90) -c  -O2 src_f90/f90Types.f90 
 
@@ -129,7 +133,12 @@ asciiCon.o:	src_f90/asciiCon.f90
 		$(F90) -c  -O2 src_f90/asciiCon.f90 
 
 rteModule.o:	src_f90/rteModule.f90 
-		$(F90) -c  -O2 src_f90/rteModule.f90 
+		$(F90) -c  -O2 src_f90/rteModule.f90
+		
+ensForestReg.o:	src_c/ensForestReg.c 
+		gcc -c -O3 -fPIC -O2 src_c/ensForestReg.c
+
+ 
 
 armadillo_funcs.o:
 		g++  -std=c++11 -c -fPIC -DARMA_DONT_USE_WRAPPER -I../cmbv6x/src_c/armadillo-10.1.2/include src_c/armadillo_funcs.cpp

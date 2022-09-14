@@ -64,7 +64,7 @@ allocate(tpw(nc))
 allocate(tpwR(nc))
 allocate(rheofs(nRhEofs,n), cldweofs(nCldwEofs,n), cldwm(n), stdrhPC(nRhEofs), stdcldwPC(nCldwEofs))
 
-open(10,file='AncData/rhCloud.dat')
+open(10,file='supportData/AncData/rhCloud.dat')
 read(10,*) (rlhm(i),i=1,n)
 
 do i=1,nRhEofs
@@ -82,7 +82,7 @@ read(10,*) (stdcldwPC(j),j=1,ncldwEofs)
 !print*, stdcldwPC(1:10)
 close(10)
 mfreq(3)=21.3
-open(10,file='AncData/clusters80.dat')
+open(10,file='supportData/AncData/clusters80.dat')
 do i=1,nc
    read(10,*) (rlhmrc(j,i),j=1,nlayer), (junk(j),j=n+1,40)
    read(10,*) (cc(j,i),j=1,nlayer), (junk(j),j=n+1,40)

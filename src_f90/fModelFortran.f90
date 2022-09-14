@@ -81,7 +81,8 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
 
   nstd=nstdA
   nSub=8
-
+  ithresh=0
+  sxs=0
   do i=1,nsub
      xs(i)=exp(nstd*xs(i)) 
      sxs=sxs+xs(i)
@@ -106,11 +107,14 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
   !print*, nodeP
   !return
   call interpol(nodeP,log10dnP,nNodes,log10dn)
+  !print*,log10dn_in
   do i=node(1),node(5)
    if (log10dn_in(i)>-99.9) then
       log10dn(i)=log10dn(i)+log10dn_in(i)
+      !print*, log10dn(i), log10dn_in(i)
    end if
   end do
+  !print*,node(1),node(5)
   !print*, log10dnp
   !return 
   z13=z13obs
@@ -273,9 +277,9 @@ subroutine fmodel_fortran(z13obs,z35obs,node,isurf,imu,log10dnP,nodeP,nNodes,&
    kext=kextAvg
    salb=salbAvg
    asym=asymAvg
-   
-   pia13M=-10.*log10(sum(l_13)/nSub)
-   pia35M=-10.*log10(sum(l_35)/nSub)
+   !print*, (l_35)
+   pia13M=-10.*log10(sum(l_13(1:nsub))/nSub)
+   pia35M=-10.*log10(sum(l_35(1:nsub))/nSub)
 
    
 
