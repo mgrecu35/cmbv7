@@ -16,12 +16,17 @@ import numpy as np
 xs=np.random.randn(50)
 nstda=0.05
 
-sfcRateL=[]
+sfcSnowRateL=[]
+sfcRainRateL=[]
 pRate99=np.zeros((88),float)-99
 pRateL=[]
 
-cAlg.init_keras()
+#cAlg.init_keras()
+cAlg.init_keras2()
+#stop
 dmL=[]
+irainp=0
+snowProfL=[]
 for f1_,f2_,f3_ in zip(f1[:],f2[:],f3[:]):
     input_=readData(f1_,f2_,f3_,n1,n2)
     qv,press,sfcType,pType,airTemp,envNodes,binNodes,\
@@ -65,15 +70,22 @@ for f1_,f2_,f3_ in zip(f1[:],f2[:],f3[:]):
             if n2p>n1p:
                 iwc_nn=np.zeros((n2p-n1p),float)
             if len(a1[0])>0:
-                nw_ensf,dm_ensf = cAlg.ensforest_nw(z13obs[n1p:n2p][a1],z35obs[n1p:n2p][a1])
-                log10dn[n1p:n2p][a1]=0.9*nw_ensf
-                temp=nw_ensf*0-10
+                temp=z13obs[n1p:n2p][a1].data*0-10
                 x_in=np.array([z13obs[n1p:n2p][a1].data,z35obs[n1p:n2p][a1].data,temp]).T
-                y_out=cAlg.call_keras(x_in)
+                y_out=cAlg.call_keras2(x_in)
                 Nw,IWC,Dm=y_out[:,0],y_out[:,1],y_out[:,2]
-                log10dn[n1p:n2p][a1]=np.log10(Nw/0.08e8)
-                dmL.append([dm_ensf[-1],Dm[-1]])
+                
+                Nw2=cAlg.get_nw(z13obs[n1p:n2p][a1].data,z35obs[n1p:n2p][a1].data,1e3*Dm)
+                log10dn[n1p:n2p][a1]=Nw2*0.975+0.025*np.log10(Nw/0.08e8)+0.5*np.random.randn()
+                #dmL.append([dm_ensf[-1],Dm[-1]])
                 iwc_nn[a1]=IWC
+                if n2p<node[3] and node[3]<88:
+                    #print(n2p,node[2],node[3],node[4])
+                    
+                    log10dn[n2p:node[3]]=np.interp(np.arange(n2p,node[3]),[n2p,node[3]],\
+                        [log10dn[n2p-1],log10dn[node[3]]])
+                    #if node[2]<node[4] and n2p<node[2]-1:
+                        #stop
                 #print(nw_ensf)
             #if hfreez>0 or n2p-n1p<10:
             #    continue
@@ -91,7 +103,7 @@ for f1_,f2_,f3_ in zip(f1[:],f2[:],f3[:]):
                 
                 if rrate[node[4]-1]>0 and len(a1[0])>=0:
                    #print(len(sfcRateL),node)
-                   sfcRateL.append([rrate[node[4]-1],pRateCMB[i,j,node[4]-1]])
+                   sfcSnowRateL.append([rrate[node[4]-1],pRateCMB[i,j,node[4]-1]])
                    for k in range(n1p,n2p):
                        if z35obs[k]>12 and z13obs[k]>12:
                         zsfcL.append([z35obs[k],z35mod[k]])
@@ -99,12 +111,16 @@ for f1_,f2_,f3_ in zip(f1[:],f2[:],f3[:]):
                    #print(nw_ensf,node,n1p,n2p,rrate[node[4]-1])
                    #print(n1p,n2p)
                    #stop
-                   
+            if(hfreez>0 and node[4]>=node[3]):
+                if rrate[node[4]-1]>0:
+                    sfcRainRateL.append([rrate[node[4]-1],pRateCMB[i,j,node[4]-1]])
+                    snowProfL.append(rrate[node[3]-30:node[3]])
         else:
             pRateL.append(pRate99)
+    break
 
-
-sfcRateL=np.array(sfcRateL)
+sfcRainRateL=np.array(sfcRainRateL)
+sfcSnowRateL=np.array(sfcSnowRateL)
 pRateL=np.array(pRateL)
 zsfcL=np.array(zsfcL)
 dmL=np.array(dmL)

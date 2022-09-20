@@ -33,4 +33,11 @@ def genCode(modName,tree, feature_names):
     s1,scode=recurse(left, right, tree, value,threshold, features, 0, s1,scode)
     return scode+"}\n"
    
-scode=genCode("dtree_dm",dtree, ["zku","zka"])
+dtree_dict=pickle.load(open("dEnsForest_dm.pklz","rb"))
+dtree=dtree_dict['dtree_dm']
+f=open("ensForestReg.c","w")
+for i in range(5):
+    code=genCode("treereg_dm_%i_"%i,dtree.estimators_[i], ["*zku","*zka"])
+    f.write(code)
+
+f.close()
